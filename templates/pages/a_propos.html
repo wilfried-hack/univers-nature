@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load boutique %}
+{% block titre %}Notre histoire{% endblock %}
+
+{% block contenu %}
+{% include 'includes/entete_page.html' with titre='À propos de '|add:boutique.NOM titre_court='Notre histoire' texte=boutique.SLOGAN %}
+
+<section class="un-sec">
+  <div class="container">
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-lg-6"><div class="un-vis">{% include 'includes/illustration.html' %}</div></div>
+      <div class="col-lg-6">
+        <h2 class="h4 mb-3">Notre histoire</h2>
+        <p>{{ boutique.NOM }} est née d’une conviction : chacun doit pouvoir trouver facilement des produits de soin et d’entretien authentiques, dont il connaît la composition et l’origine.</p>
+        <p>Nous sélectionnons et préparons des produits artisanaux ou fabriqués selon des exigences de qualité précises : baumes pour les lèvres et le massage, savons, détergent, vinaigre blanc et eau de Javel.</p>
+        <p class="fst-italic text-doux">À compléter : la date de création, la personne fondatrice, la ville, la façon dont les produits sont préparés.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="un-sec bg-creme2">
+  <div class="container">
+    <div class="un-titre"><h2>Nos engagements</h2><p>Ce qui guide chacun de nos produits.</p></div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+      <div class="col"><div class="un-carte h-100 p-4 text-center"><span class="un-rond mb-3">{% icone 'feuille' 34 %}</span><h3 class="h6">Authenticité</h3><hr class="w-50 mx-auto"><p class="text-doux mb-0">Des produits présentés tels qu’ils sont : « naturel » et « fait main » seulement quand c’est vrai.</p></div></div>
+      <div class="col"><div class="un-carte h-100 p-4 text-center"><span class="un-rond mb-3"><i class="bi bi-search"></i></span><h3 class="h6">Transparence</h3><hr class="w-50 mx-auto"><p class="text-doux mb-0">Composition, utilisation et précautions indiquées sur chaque fiche produit.</p></div></div>
+      <div class="col"><div class="un-carte h-100 p-4 text-center"><span class="un-rond mb-3">{% icone 'main' 34 %}</span><h3 class="h6">Savoir-faire</h3><hr class="w-50 mx-auto"><p class="text-doux mb-0">Des préparations artisanales réalisées avec soin, en petites quantités.</p></div></div>
+      <div class="col"><div class="un-carte h-100 p-4 text-center"><span class="un-rond mb-3"><i class="bi bi-whatsapp"></i></span><h3 class="h6">Proximité</h3><hr class="w-50 mx-auto"><p class="text-doux mb-0">Un service client joignable sur WhatsApp, avant et après votre achat.</p></div></div>
+    </div>
+  </div>
+</section>
+
+{% include 'includes/contact_bloc.html' %}
+{% endblock %}

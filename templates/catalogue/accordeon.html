@@ -1,0 +1,10 @@
+<div class="accordion-item{% if attention %} is-attention{% endif %}">
+  <h2 class="accordion-header">
+    <button class="accordion-button{% if not ouvert %} collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#info-{{ id }}" aria-expanded="{% if ouvert %}true{% else %}false{% endif %}" aria-controls="info-{{ id }}">
+      {% if attention %}<i class="bi bi-exclamation-triangle me-2 text-warning"></i>{% endif %}{{ titre }}
+    </button>
+  </h2>
+  <div id="info-{{ id }}" class="accordion-collapse collapse{% if ouvert %} show{% endif %}">
+    <div class="accordion-body">{{ texte }}</div>
+  </div>
+</div>

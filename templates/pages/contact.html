@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block titre %}Contact{% endblock %}
+
+{% block contenu %}
+{% include 'includes/entete_page.html' with titre='Contactez-nous' titre_court='Contact' texte='Pour une question sur un produit, une commande ou une livraison, le plus rapide est WhatsApp.' %}
+
+{% include 'includes/contact_bloc.html' %}
+
+<section class="pb-5">
+  <div class="container">
+    <div class="un-encadre un-encadre--terre">
+      <h2 class="h5"><i class="bi bi-shield-exclamation"></i> Attention aux faux comptes</h2>
+      <p class="mb-0">Notre seul numéro WhatsApp officiel est le <b>{{ boutique.TELEPHONE }}</b>. Nous ne vous demanderons jamais votre code secret ou votre code PIN Mobile Money.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'gestion/base.html' %}
+{% block titre %}Commandes{% endblock %}
+
+{% block contenu %}
+<div class="g-ph">
+  <div><h1>Les <em>commandes.</em></h1><p>Confirmez, vérifiez les paiements et suivez chaque livraison.</p></div>
+</div>
+
+<form class="g-carte p-3 mb-4 row g-2 align-items-end" method="get" role="search">
+  <div class="col-md-4">
+    <label class="form-label" for="q">Rechercher</label>
+    <input class="form-control" id="q" type="search" name="q" value="{{ q }}" placeholder="Numéro, nom, téléphone, référence…">
+  </div>
+  <div class="col-6 col-md-2">
+    <label class="form-label" for="statut">Statut</label>
+    <select class="form-select" id="statut" name="statut"><option value="">Tous</option>{% for cle, libelle in statuts %}<option value="{{ cle }}"{% if statut == cle %} selected{% endif %}>{{ libelle }}</option>{% endfor %}</select>
+  </div>
+  <div class="col-6 col-md-2">
+    <label class="form-label" for="paiement">Paiement</label>
+    <select class="form-select" id="paiement" name="paiement"><option value="">Tous</option>{% for cle, libelle in paiements %}<option value="{{ cle }}"{% if paiement == cle %} selected{% endif %}>{{ libelle }}</option>{% endfor %}</select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label" for="mode">Règlement</label>
+    <select class="form-select" id="mode" name="mode"><option value="">Tous</option>{% for cle, libelle in modes %}<option value="{{ cle }}"{% if mode == cle %} selected{% endif %}>{% if cle == 'livraison' %}À la livraison{% else %}Mobile Money{% endif %}</option>{% endfor %}</select>
+  </div>
+  <div class="col-md-2 d-grid"><button class="btn btn-primary" type="submit"><i class="bi bi-funnel"></i> Filtrer</button></div>
+</form>
+
+{% if preuve %}<div class="alert alert-warning"><i class="bi bi-phone"></i> Commandes Mobile Money dont le client a envoyé une preuve de paiement : vérifiez la réception du transfert, puis passez le paiement en « Payée ». <a href="{% url 'gestion:commandes' %}">Voir toutes les commandes</a></div>{% endif %}
+<p class="text-secondary">{{ commandes|length }} commande{{ commandes|length|pluralize }}{% if q or statut or paiement or mode %} · <a href="{% url 'gestion:commandes' %}">effacer les filtres</a>{% endif %}</p>
+{% include 'gestion/_tableau_commandes.html' %}
+{% endblock %}

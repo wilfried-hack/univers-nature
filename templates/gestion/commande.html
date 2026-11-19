@@ -1,0 +1,96 @@
+{% extends 'gestion/base.html' %}
+{% load boutique %}
+{% block titre %}Commande {{ commande.numero }}{% endblock %}
+
+{% block contenu %}
+<nav aria-label="Fil d’Ariane"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'gestion:commandes' %}">Commandes</a></li><li class="breadcrumb-item active" aria-current="page">{{ commande.numero }}</li></ol></nav>
+<div class="g-ph">
+  <div>
+    <h1>Commande <em>{{ commande.numero }}</em></h1>
+    <p>Passée le {{ commande.cree_le|date:"d/m/Y à H:i" }}{% if commande.client %} · compte {{ commande.client.username }}{% endif %}</p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <span class="g-etat g-etat--{{ commande.statut }} fs-6">{{ commande.get_statut_display }}</span>
+    <span class="g-etat g-etat--{{ commande.statut_paiement }} fs-6">{{ commande.get_statut_paiement_display }}</span>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7 d-grid gap-4 align-content-start">
+    <div class="g-carte overflow-hidden">
+      <table class="table g-table">
+        <thead><tr><th>Produit</th><th class="text-end">Prix</th><th class="text-center">Qté</th><th class="text-end">Total</th></tr></thead>
+        <tbody>
+          {% for l in commande.lignes.all %}
+          <tr><td>{{ l.nom_produit }}</td><td class="text-end text-nowrap">{{ l.prix_unitaire|fcfa }}</td><td class="text-center">{{ l.quantite }}</td><td class="text-end text-nowrap">{{ l.total|fcfa }}</td></tr>
+          {% endfor %}
+          <tr><td colspan="3">Sous-total</td><td class="text-end text-nowrap">{{ commande.sous_total|fcfa }}</td></tr>
+          <tr><td colspan="3">Livraison — {{ commande.zone.nom }}</td><td class="text-end text-nowrap">{{ commande.frais_livraison|fcfa }}</td></tr>
+          <tr class="fw-bold fs-5"><td colspan="3">Total</td><td class="text-end text-nowrap">{{ commande.total|fcfa }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="g-carte p-4">
+      <h2 class="h5 mb-3"><i class="bi bi-person"></i> Client et livraison</h2>
+      <dl class="row mb-0">
+        <dt class="col-sm-4">Nom</dt><dd class="col-sm-8">{{ commande.nom }}</dd>
+        <dt class="col-sm-4">Téléphone</dt><dd class="col-sm-8"><a href="tel:{{ commande.telephone }}">{{ commande.telephone }}</a></dd>
+        {% if commande.email %}<dt class="col-sm-4">E-mail</dt><dd class="col-sm-8"><a href="mailto:{{ commande.email }}">{{ commande.email }}</a></dd>{% endif %}
+        <dt class="col-sm-4">Zone</dt><dd class="col-sm-8">{{ commande.zone.nom }}</dd>
+        <dt class="col-sm-4">Adresse</dt><dd class="col-sm-8">{{ commande.adresse|linebreaksbr }}</dd>
+        {% if commande.note %}<dt class="col-sm-4">Remarque</dt><dd class="col-sm-8">{{ commande.note|linebreaksbr }}</dd>{% endif %}
+        <dt class="col-sm-4">Règlement</dt><dd class="col-sm-8">{{ commande.get_mode_reglement_display }}</dd>
+      </dl>
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <a class="btn btn-whatsapp" href="{{ lien_wa }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i> Écrire au client</a>
+        <a class="btn btn-outline-primary" href="tel:{{ commande.telephone }}"><i class="bi bi-telephone"></i> Appeler</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5 d-grid gap-4 align-content-start">
+    {% if commande.mode_reglement == 'mobile_money' %}
+    <div id="preuve" class="g-carte p-4{% if commande.preuve_a_verifier %} border-warning border-2{% endif %}">
+      <h2 class="h5 mb-3"><i class="bi bi-phone"></i> Preuve de paiement Mobile Money</h2>
+      {% if commande.preuve_envoyee_le %}
+        <p class="small text-secondary mb-2">Envoyée par le client le {{ commande.preuve_envoyee_le|date:"d/m/Y à H:i" }}</p>
+        <p class="mb-2">Référence : {% if commande.reference_transfert %}<b class="user-select-all">{{ commande.reference_transfert }}</b>{% else %}<span class="text-secondary">non indiquée</span>{% endif %}</p>
+        {% if commande.capture_paiement %}
+          <a href="{% url 'gestion:preuve' commande.pk %}" target="_blank" rel="noopener" title="Ouvrir la capture en grand">
+            <img class="img-fluid rounded border" style="max-height:360px" src="{% url 'gestion:preuve' commande.pk %}" alt="Capture d’écran du paiement de la commande {{ commande.numero }}">
+          </a>
+          <a class="d-inline-block small mt-2" href="{% url 'gestion:preuve' commande.pk %}" target="_blank" rel="noopener"><i class="bi bi-arrows-fullscreen"></i> Ouvrir en grand</a>
+        {% else %}
+          <p class="small text-secondary mb-0">Pas de capture d’écran jointe.</p>
+        {% endif %}
+        {% if commande.preuve_a_verifier %}
+          <div class="alert alert-warning small mt-3 mb-0"><i class="bi bi-exclamation-triangle"></i> Une capture peut être falsifiée : vérifiez toujours que <b>{{ commande.total|fcfa }}</b> sont bien arrivés sur le compte Mobile Money avant de passer le paiement en « Payée ».</div>
+        {% endif %}
+      {% else %}
+        <p class="text-secondary mb-0">Le client n’a pas encore envoyé de preuve de paiement.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <form class="g-carte p-4 d-grid gap-3" method="post">
+      {% csrf_token %}
+      <h2 class="h5 mb-0"><i class="bi bi-arrow-repeat"></i> Suivi de la commande</h2>
+      {% if commande.statut == 'annulee' %}
+        <div class="alert alert-danger mb-0">Commande annulée : les produits ont été remis en stock. Elle ne peut plus être modifiée.</div>
+      {% else %}
+        {% if commande.mode_reglement == 'mobile_money' and commande.statut_paiement == 'attente' %}
+          <div class="alert alert-warning mb-0 small"><i class="bi bi-exclamation-triangle"></i> Vérifiez sur le compte Mobile Money que <b>{{ commande.total|fcfa }}</b> ont bien été reçus avant de passer la commande en « Payée » et de l’expédier.</div>
+        {% endif %}
+        {% include 'includes/champ.html' with champ=form.statut %}
+        {% include 'includes/champ.html' with champ=form.statut_paiement %}
+        {% include 'includes/champ.html' with champ=form.reference_transfert %}
+        {% include 'includes/champ.html' with champ=form.frais_livraison %}
+        {% include 'includes/champ.html' with champ=form.note_interne %}
+        <small class="text-secondary">« Annulée » remet les produits en stock. « Livrée » avec paiement à la livraison passe automatiquement la commande en « Payée ».</small>
+        <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> Enregistrer</button>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}

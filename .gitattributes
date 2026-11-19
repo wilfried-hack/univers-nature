@@ -1,0 +1,12 @@
+# Fins de ligne : stockées en LF dans le dépôt (serveur Linux), adaptées automatiquement sous Windows
+* text=auto
+
+# Fichiers binaires : jamais modifiés
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.sqlite3 binary

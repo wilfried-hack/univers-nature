@@ -1,0 +1,39 @@
+{% extends 'gestion/base.html' %}
+{% load boutique %}
+{% block titre %}Tableau de bord{% endblock %}
+
+{% block contenu %}
+<div class="g-ph">
+  <div><h1>Bonjour, <em>{{ user.first_name|default:user.username }}.</em></h1><p>Commandes, paiements à vérifier et stocks de la boutique.</p></div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-primary" href="{% url 'gestion:produit_ajouter' %}"><i class="bi bi-plus-lg"></i> Ajouter un produit</a>
+    <a class="btn btn-outline-primary" href="{% url 'gestion:commandes' %}?statut=recue"><i class="bi bi-inbox"></i> Nouvelles commandes</a>
+  </div>
+</div>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3">
+  {% for k in kpis %}
+  <div class="col">{% if k.lien %}<a class="text-decoration-none text-reset" href="{% url 'gestion:commandes' %}{{ k.lien }}">{% endif %}<div class="g-carte g-kpi{% if k.alerte %} is-alerte{% endif %}"><i class="bi {{ k.icone }}"></i><div><span>{{ k.libelle }}</span><strong>{% if k.fcfa %}{{ k.valeur|fcfa }}{% else %}{{ k.valeur }}{% endif %}</strong></div></div>{% if k.lien %}</a>{% endif %}</div>
+  {% endfor %}
+</div>
+
+<div class="g-titre-table"><h2>Commandes récentes</h2><a href="{% url 'gestion:commandes' %}">Toutes les commandes <i class="bi bi-arrow-right"></i></a></div>
+{% include 'gestion/_tableau_commandes.html' %}
+
+<div class="row g-4">
+  <div class="col-12">
+    <div class="g-titre-table"><h2>Stock bas</h2><a href="{% url 'gestion:produits' %}">Produits <i class="bi bi-arrow-right"></i></a></div>
+    <div class="g-carte overflow-hidden">
+      <table class="table g-table">
+        <tbody>
+        {% for p in stock_bas %}
+          <tr><td><a href="{% url 'gestion:produit_modifier' p.pk %}">{{ p.nom }}</a></td><td class="text-end"><span class="g-etat{% if p.stock == 0 %} g-etat--annulee{% endif %}">{{ p.stock }} en stock</span></td></tr>
+        {% empty %}
+          <tr><td class="text-secondary py-4 text-center">Tous les stocks sont suffisants.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

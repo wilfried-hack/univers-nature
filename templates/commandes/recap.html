@@ -1,0 +1,14 @@
+{% load boutique %}
+<aside class="un-carte un-recap p-4 d-grid gap-2" aria-label="Récapitulatif de la commande">
+  <h2 class="h5 mb-0">Commande {{ commande.numero }}</h2>
+  <small class="text-doux">Passée le {{ commande.cree_le|date:"d/m/Y à H:i" }}</small>
+  {% for l in commande.lignes.all %}
+    <div class="d-flex justify-content-between gap-2"><span>{{ l.quantite }} × {{ l.nom_produit }}</span><span class="text-nowrap">{{ l.total|fcfa }}</span></div>
+  {% endfor %}
+  <div class="d-flex justify-content-between border-top pt-2"><span>Sous-total</span><span>{{ commande.sous_total|fcfa }}</span></div>
+  <div class="d-flex justify-content-between"><span>Livraison ({{ commande.zone.nom }})</span><span class="text-nowrap">{{ commande.frais_livraison|fcfa }}</span></div>
+  <div class="d-flex justify-content-between border-top pt-2 fs-5 fw-bold text-primary"><span>Total</span><span>{{ commande.total|fcfa }}</span></div>
+  <div class="d-flex justify-content-between gap-2"><span>Règlement</span><span class="text-end">{{ commande.get_mode_reglement_display }}</span></div>
+  <div class="d-flex justify-content-between"><span>Paiement</span><span class="un-statut un-statut--{{ commande.statut_paiement }}">{{ commande.get_statut_paiement_display }}</span></div>
+  <div class="d-flex justify-content-between gap-2"><span>Livraison à</span><span class="text-end">{{ commande.nom }}<br>{{ commande.adresse|linebreaksbr }}</span></div>
+</aside>

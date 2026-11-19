@@ -1,0 +1,16 @@
+{# Mise à jour rapide du statut d'une commande, dans une ligne de tableau (comme sur MEDIATECH) #}
+{% if c.statut == 'annulee' %}
+  <span class="g-etat g-etat--annulee">Annulée</span>
+{% else %}
+<form class="g-maj" method="post" action="{% url 'gestion:commande_suivi' c.pk %}">
+  {% csrf_token %}
+  <input type="hidden" name="suivant" value="{{ request.get_full_path }}">
+  <select class="form-select form-select-sm" name="statut" aria-label="Statut de la commande {{ c.numero }}">
+    {% for cle, libelle in statuts %}<option value="{{ cle }}"{% if c.statut == cle %} selected{% endif %}>{{ libelle }}</option>{% endfor %}
+  </select>
+  <select class="form-select form-select-sm" name="statut_paiement" aria-label="Paiement de la commande {{ c.numero }}">
+    {% for cle, libelle in paiements %}{% if cle != 'annulee' %}<option value="{{ cle }}"{% if c.statut_paiement == cle %} selected{% endif %}>{{ libelle }}</option>{% endif %}{% endfor %}
+  </select>
+  <button class="btn btn-outline-primary btn-sm" type="submit">Mettre à jour</button>
+</form>
+{% endif %}

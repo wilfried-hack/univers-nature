@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load boutique %}
+{% block titre %}{{ produit.nom }}{% endblock %}
+{% block description %}{{ produit.description_courte }}{% endblock %}
+
+{% block contenu %}
+<section class="un-sec pt-4">
+  <div class="container">
+    <nav aria-label="Fil d’Ariane">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catalogue:liste' %}">Boutique</a></li>
+        <li class="breadcrumb-item"><a href="{{ produit.categorie.get_absolute_url }}">{{ produit.categorie.nom }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ produit.nom }}</li>
+      </ol>
+    </nav>
+
+    <div class="row g-4 g-lg-5">
+      <div class="col-lg-6">
+        <div class="un-fiche-img">
+          {% if produit.image %}<img src="{{ produit.image.url }}" alt="{{ produit.nom }}">{% else %}{% icone 'feuille' 120 %}{% endif %}
+          <span class="un-badges">
+            {% if produit.en_promo %}<span class="badge badge-promo">Promo</span>{% endif %}
+            {% if produit.nouveaute %}<span class="badge text-bg-primary">Nouveau</span>{% endif %}
+            {% if produit.fait_main %}<span class="badge badge-blanc">Fait main</span>{% endif %}
+            {% if produit.naturel %}<span class="badge badge-blanc">Naturel</span>{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <span class="un-produit-cat">{{ produit.categorie.nom }}</span>
+        <h1 class="h2 my-1">{{ produit.nom }}</h1>
+        <p class="lead text-doux">{{ produit.description_courte }}</p>
+
+        <div class="un-fiche-prix">{{ produit.prix_actuel|fcfa }}{% if produit.en_promo %} <s>{{ produit.prix|fcfa }}</s>{% endif %}</div>
+        <p class="text-doux">{{ produit.contenance }}</p>
+
+        <div class="un-carte p-4 d-grid gap-3">
+          {% if produit.en_stock %}
+            <span class="fw-bold text-primary"><i class="bi bi-check-circle"></i> En stock{% if produit.stock <= 5 %} — plus que {{ produit.stock }}{% endif %}</span>
+            <form class="d-flex gap-2" method="post" action="{% url 'panier:ajouter' produit.pk %}">
+              {% csrf_token %}
+              <label class="visually-hidden" for="qte">Quantité</label>
+              <input class="form-control text-center" style="max-width:90px" id="qte" type="number" name="quantite" value="1" min="1" max="{{ produit.stock }}">
+              <button class="btn btn-primary flex-grow-1" type="submit"><i class="bi bi-bag-plus"></i> Ajouter au panier</button>
+            </form>
+          {% else %}
+            <span class="fw-bold text-danger"><i class="bi bi-x-circle"></i> Rupture de stock</span>
+          {% endif %}
+          <small class="text-doux">Paiement à la livraison ou par Mobile Money. Aucun paiement en ligne.</small>
+        </div>
+
+        <div class="accordion mt-4" id="infos-produit">
+          {% if produit.description %}{% include 'catalogue/accordeon.html' with id='desc' titre='Description' texte=produit.description ouvert=True %}{% endif %}
+          {% if produit.composition %}{% include 'catalogue/accordeon.html' with id='compo' titre='Composition / ingrédients' texte=produit.composition %}{% endif %}
+          {% if produit.caracteristiques %}{% include 'catalogue/accordeon.html' with id='carac' titre='Caractéristiques' texte=produit.caracteristiques %}{% endif %}
+          {% if produit.utilisation %}{% include 'catalogue/accordeon.html' with id='util' titre='Mode d’utilisation' texte=produit.utilisation %}{% endif %}
+          {% if produit.precautions %}
+            {# Précautions ouvertes d'office pour les produits d'entretien (eau de Javel, vinaigre…) #}
+            {% if produit.categorie.slug == 'entretien-domestique' %}
+              {% include 'catalogue/accordeon.html' with id='prec' titre='Précautions d’emploi' texte=produit.precautions attention=True ouvert=True %}
+            {% else %}
+              {% include 'catalogue/accordeon.html' with id='prec' titre='Précautions d’emploi' texte=produit.precautions attention=True %}
+            {% endif %}
+          {% endif %}
+          {% if produit.fabricant %}{% include 'catalogue/accordeon.html' with id='fab' titre='Fabricant' texte=produit.fabricant %}{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if similaires %}
+<section class="un-sec">
+  <div class="container">
+    <div class="un-titre"><h2>Dans la même catégorie</h2></div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">{% for produit in similaires %}<div class="col">{% include 'includes/carte_produit.html' %}</div>{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block titre %}Mon compte{% endblock %}
+
+{% block contenu %}
+{% include 'includes/entete_page.html' with titre='Bonjour '|add:user.first_name titre_court='Mon compte' texte='Retrouvez ici vos dernières commandes et leur suivi.' %}
+<section class="un-sec pt-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h5 mb-0">Mes dernières commandes</h2>
+      <a href="{% url 'commandes:mes_commandes' %}">Voir toutes mes commandes</a>
+    </div>
+    {% include 'commandes/tableau.html' %}
+    <div class="un-carte p-4 mt-4">
+      <h2 class="h5">Mes informations</h2>
+      <p class="mb-1"><i class="bi bi-person"></i> {{ user.get_full_name|default:user.username }}</p>
+      <p class="mb-2"><i class="bi bi-envelope"></i> {{ user.email|default:"—" }}</p>
+      <small class="text-doux">Pour modifier vos informations ou supprimer votre compte, écrivez-nous sur WhatsApp ou à {{ boutique.EMAIL }}.</small>
+    </div>
+  </div>
+</section>
+{% endblock %}

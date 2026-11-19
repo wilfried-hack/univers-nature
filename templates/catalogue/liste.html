@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load boutique %}
+{% block titre %}{% if categorie %}{{ categorie.nom }}{% else %}Boutique{% endif %}{% endblock %}
+
+{% block contenu %}
+{% if categorie %}
+  {% url 'catalogue:liste' as url_boutique %}
+  {% include 'includes/entete_page.html' with titre=categorie.nom texte=categorie.description fil_url=url_boutique fil_nom='Boutique' %}
+{% else %}
+  {% include 'includes/entete_page.html' with titre='La boutique' titre_court='Boutique' texte='Tous nos produits de soin, de bien-être et d’entretien domestique.' %}
+{% endif %}
+
+<section class="un-sec pt-5">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Filtres : panneau latéral sur ordinateur, repliable sur téléphone -->
+      <div class="col-lg-3">
+        <button class="btn btn-outline-primary w-100 d-lg-none mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#filtres" aria-expanded="false" aria-controls="filtres">
+          <i class="bi bi-funnel"></i> Rechercher et filtrer
+        </button>
+        <div class="collapse d-lg-block" id="filtres">
+          <form class="un-carte p-4 d-grid gap-3" method="get" role="search" aria-label="Rechercher et filtrer">
+            <div>
+              <label class="form-label" for="q">Rechercher</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input class="form-control" id="q" type="search" name="q" value="{{ q }}" placeholder="Nom, ingrédient…">
+              </div>
+            </div>
+            <div>
+              <span class="form-label d-block">Catégories</span>
+              <div class="list-group">
+                <a class="list-group-item list-group-item-action{% if not categorie %} active{% endif %}" href="{% url 'catalogue:liste' %}">Tous les produits</a>
+                {% for c in categories %}<a class="list-group-item list-group-item-action{% if categorie == c %} active{% endif %}" href="?categorie={{ c.slug }}"{% if categorie == c %} aria-current="page"{% endif %}>{{ c.nom }}</a>{% endfor %}
+              </div>
+              {% if categorie %}<input type="hidden" name="categorie" value="{{ categorie.slug }}">{% endif %}
+            </div>
+            <div>
+              <label class="form-label" for="prix_max">Prix maximum (FCFA)</label>
+              <input class="form-control" id="prix_max" type="number" name="prix_max" min="0" step="100" value="{{ prix_max }}" placeholder="Ex. : 3000">
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" id="dispo" type="checkbox" name="dispo" value="1"{% if dispo %} checked{% endif %}>
+              <label class="form-check-label" for="dispo">En stock uniquement</label>
+            </div>
+            <div>
+              <label class="form-label" for="tri">Trier par</label>
+              <select class="form-select" id="tri" name="tri">{% for cle, libelle in tris.items %}<option value="{{ cle }}"{% if tri == cle %} selected{% endif %}>{{ libelle }}</option>{% endfor %}</select>
+            </div>
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Appliquer</button>
+            {% if q or dispo or prix_max %}<a class="text-center" href="{% url 'catalogue:liste' %}{% if categorie %}?categorie={{ categorie.slug }}{% endif %}">Effacer les filtres</a>{% endif %}
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <p class="text-doux">{{ produits|length }} produit{{ produits|length|pluralize }}{% if q %} pour « {{ q }} »{% endif %}</p>
+        {% if produits %}
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4">{% for produit in produits %}<div class="col">{% include 'includes/carte_produit.html' %}</div>{% endfor %}</div>
+        {% else %}
+          <div class="un-carte text-center p-5">
+            <h2 class="h4">Aucun produit trouvé</h2>
+            <p class="text-doux">Essayez un autre mot-clé ou retirez les filtres.</p>
+            <a class="btn btn-outline-primary" href="{% url 'catalogue:liste' %}">Voir toute la boutique</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

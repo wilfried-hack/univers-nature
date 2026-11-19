@@ -1,0 +1,44 @@
+{% extends 'gestion/base.html' %}
+{% block titre %}Catégories{% endblock %}
+
+{% block contenu %}
+<div class="g-ph"><div><h1>Les <em>catégories.</em></h1><p>Elles organisent la boutique et l’accueil.</p></div></div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="g-carte overflow-hidden">
+      <table class="table g-table table-hover">
+        <thead><tr><th>Catégorie</th><th class="text-center">Produits</th><th class="text-center">Ordre</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+        {% for c in categories %}
+          <tr{% if edition == c %} class="table-active"{% endif %}>
+            <td><b>{{ c.nom }}</b><br><small class="text-secondary">{{ c.description|truncatechars:80 }}</small></td>
+            <td class="text-center">{{ c.nb }}</td>
+            <td class="text-center">{{ c.ordre }}</td>
+            <td class="text-end text-nowrap">
+              <a class="btn btn-outline-primary btn-sm" href="{% url 'gestion:categorie_modifier' c.pk %}"><i class="bi bi-pencil"></i></a>
+              <form class="d-inline" method="post" action="{% url 'gestion:categorie_supprimer' c.pk %}" onsubmit="return confirm('Supprimer cette catégorie ?')">{% csrf_token %}
+                <button class="btn btn-outline-danger btn-sm" type="submit"{% if c.nb %} disabled title="Contient des produits"{% endif %}><i class="bi bi-trash3"></i></button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="4" class="text-center text-secondary py-4">Aucune catégorie.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <form class="g-carte p-4 d-grid gap-3" method="post" novalidate>
+      {% csrf_token %}
+      <h2 class="h5 mb-0">{% if edition %}Modifier « {{ edition.nom }} »{% else %}Nouvelle catégorie{% endif %}</h2>
+      {% include 'includes/champ.html' with champ=form.nom %}
+      {% include 'includes/champ.html' with champ=form.description %}
+      {% include 'includes/champ.html' with champ=form.ordre %}
+      <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> Enregistrer</button>
+      {% if edition %}<a class="btn btn-outline-primary" href="{% url 'gestion:categories' %}">Annuler</a>{% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}

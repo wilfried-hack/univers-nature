@@ -1,0 +1,115 @@
+{% load static boutique %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}{{ boutique.NOM }}{% endblock %} | {{ boutique.NOM }}</title>
+  <meta name="description" content="{% block description %}{{ boutique.NOM }} : baumes, savons et produits d'entretien authentiques, livrés chez vous. Paiement à la livraison ou par Mobile Money.{% endblock %}">
+  <link rel="icon" href="{% static 'img/logo.svg' %}" type="image/svg+xml">
+  <!-- Bootstrap installé en local (static/vendor), puis le thème du site -->
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script defer src="{% static 'js/site.js' %}"></script>
+</head>
+<body>
+{% with page=request.resolver_match.url_name espace=request.resolver_match.namespace %}
+<header class="un-entete sticky-top">
+  <nav class="navbar navbar-expand-lg" aria-label="Navigation principale">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'pages:accueil' %}" aria-label="{{ boutique.NOM }}, accueil">
+        <img src="{% static 'img/logo.svg' %}" alt="">
+        <span class="un-marque-nom"><b>{{ boutique.NOM }}</b><small class="d-none d-sm-block">{{ boutique.SLOGAN }}</small></span>
+      </a>
+
+      <div class="d-flex align-items-center order-lg-last ms-auto ms-lg-2">
+        <a class="un-outil" href="{% if user.is_authenticated %}{% url 'comptes:espace' %}{% else %}{% url 'comptes:connexion' %}{% endif %}" title="{% if user.is_authenticated %}Mon compte{% else %}Connexion{% endif %}">
+          <i class="bi bi-person" aria-hidden="true"></i><span class="visually-hidden">{% if user.is_authenticated %}Mon compte{% else %}Connexion{% endif %}</span>
+        </a>
+        <a class="un-outil" href="{% url 'panier:detail' %}" title="Panier">
+          <i class="bi bi-bag" aria-hidden="true"></i><span class="visually-hidden">Panier, {{ panier_nb }} article{{ panier_nb|pluralize }}</span>
+          {% if panier_nb %}<span class="badge rounded-pill">{{ panier_nb }}</span>{% endif %}
+        </a>
+        <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#nav-principale" aria-controls="nav-principale" aria-expanded="false" aria-label="Ouvrir le menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <div class="collapse navbar-collapse" id="nav-principale">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link{% if page == 'accueil' %} active{% endif %}" href="{% url 'pages:accueil' %}"{% if page == 'accueil' %} aria-current="page"{% endif %}>Accueil</a></li>
+          <li class="nav-item"><a class="nav-link{% if espace == 'catalogue' %} active{% endif %}" href="{% url 'catalogue:liste' %}"{% if espace == 'catalogue' %} aria-current="page"{% endif %}>Boutique</a></li>
+          <li class="nav-item"><a class="nav-link{% if page == 'a_propos' %} active{% endif %}" href="{% url 'pages:a_propos' %}"{% if page == 'a_propos' %} aria-current="page"{% endif %}>Notre histoire</a></li>
+          <li class="nav-item"><a class="nav-link{% if page == 'contact' %} active{% endif %}" href="{% url 'pages:contact' %}"{% if page == 'contact' %} aria-current="page"{% endif %}>Contact</a></li>
+          {% if user.is_staff %}<li class="nav-item"><a class="nav-link" href="{% url 'gestion:tableau_de_bord' %}"><i class="bi bi-speedometer2"></i> Administration</a></li>{% endif %}
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <form method="post" action="{% url 'comptes:deconnexion' %}">{% csrf_token %}<button class="nav-link text-secondary" type="submit">Déconnexion</button></form>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+{% endwith %}
+
+<main id="contenu">
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% block contenu %}{% endblock %}
+</main>
+
+<footer class="un-pied">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <h3>{{ boutique.NOM }}</h3>
+        <p class="mb-2">{{ boutique.SLOGAN }}.</p>
+        <p class="mb-0">Paiement à la livraison ou par Mobile Money. Aucun paiement en ligne.</p>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h3>Boutique</h3>
+        <ul class="list-unstyled d-grid gap-1 mb-0">
+          <li><a href="{% url 'catalogue:liste' %}">Tous les produits</a></li>
+          <li><a href="{% url 'catalogue:liste' %}?categorie=soin-bien-etre">Soin & bien-être</a></li>
+          <li><a href="{% url 'catalogue:liste' %}?categorie=entretien-domestique">Entretien domestique</a></li>
+          <li><a href="{% url 'panier:detail' %}">Mon panier</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-3">
+        <h3>Informations</h3>
+        <ul class="list-unstyled d-grid gap-1 mb-0">
+          <li><a href="{% url 'pages:a_propos' %}">Notre histoire</a></li>
+          <li><a href="{% url 'pages:cgv' %}">Conditions générales de vente</a></li>
+          <li><a href="{% url 'pages:confidentialite' %}">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3">
+        <h3>Nous contacter</h3>
+        <ul class="list-unstyled d-grid gap-1 mb-0">
+          <li><a href="{% lien_whatsapp %}" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i> {{ boutique.TELEPHONE }}</a></li>
+          <li><a href="tel:{{ boutique.TELEPHONE_LIEN }}"><i class="bi bi-telephone"></i> {{ boutique.TELEPHONE }}</a></li>
+          <li><a href="mailto:{{ boutique.EMAIL }}"><i class="bi bi-envelope"></i> {{ boutique.EMAIL }}</a></li>
+          <li><i class="bi bi-geo-alt"></i> {{ boutique.ADRESSE }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="un-pied-bas">© {% now "Y" %} {{ boutique.NOM }} • {{ boutique.ADRESSE }} • Tous droits réservés.</div>
+  </div>
+</footer>
+
+{# Bouton WhatsApp flottant : masqué sur le panier et la commande pour ne pas cacher les montants #}
+{% if request.resolver_match.namespace != 'panier' and request.resolver_match.namespace != 'commandes' %}
+<a class="un-wa-flottant" href="{% lien_whatsapp 'Bonjour, j’ai une question sur vos produits.' %}" target="_blank" rel="noopener noreferrer" aria-label="Nous écrire sur WhatsApp"><i class="bi bi-whatsapp"></i></a>
+{% endif %}
+</body>
+</html>

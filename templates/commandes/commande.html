@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load boutique %}
+{% block titre %}Passer commande{% endblock %}
+
+{% block contenu %}
+{% url 'panier:detail' as url_panier %}
+{% include 'includes/entete_page.html' with titre='Finaliser ma commande' titre_court='Commande' texte='Indiquez vos coordonnées, votre zone de livraison et votre mode de règlement.' fil_url=url_panier fil_nom='Panier' %}
+
+<section class="un-sec pt-5">
+  <div class="container">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="row g-4">
+        <div class="col-lg-8 d-grid gap-4">
+          {% if form.non_field_errors %}<div class="alert alert-danger mb-0">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+
+          <div class="un-carte p-4">
+            <h2 class="h5 mb-3"><span class="badge rounded-pill text-bg-primary me-1">1</span> Vos coordonnées</h2>
+            <div class="row g-3">
+              <div class="col-md-6">{% include 'includes/champ.html' with champ=form.nom %}</div>
+              <div class="col-md-6">{% include 'includes/champ.html' with champ=form.telephone %}</div>
+              <div class="col-12">{% include 'includes/champ.html' with champ=form.email %}</div>
+            </div>
+          </div>
+
+          <div class="un-carte p-4">
+            <h2 class="h5 mb-3"><span class="badge rounded-pill text-bg-primary me-1">2</span> Livraison</h2>
+            <div class="d-grid gap-3">
+              {% include 'includes/champ.html' with champ=form.zone %}
+              {% include 'includes/champ.html' with champ=form.adresse %}
+              {% include 'includes/champ.html' with champ=form.note %}
+            </div>
+          </div>
+
+          <div class="un-carte p-4">
+            <h2 class="h5 mb-3"><span class="badge rounded-pill text-bg-primary me-1">3</span> Mode de règlement</h2>
+            <div class="d-grid gap-3">
+              {% for choix in form.mode_reglement %}
+                <label class="un-mode" for="{{ choix.id_for_label }}">
+                  {{ choix.tag }}
+                  <span>
+                    <i class="bi {% if choix.data.value == 'livraison' %}bi-cash-coin{% else %}bi-phone{% endif %}"></i> {{ choix.choice_label }}
+                    {% if choix.data.value == 'livraison' %}
+                      <small>Vous payez le livreur à la réception, en espèces ou par Mobile Money. Disponible dans les zones desservies directement.</small>
+                    {% else %}
+                      <small>Après validation, le site vous indique le montant et le numéro marchand. Vous faites le transfert, puis vous envoyez la référence ou une capture d’écran directement sur le site. La commande part dès la vérification du paiement. Obligatoire pour les zones éloignées.</small>
+                    {% endif %}
+                  </span>
+                </label>
+              {% endfor %}
+            </div>
+            {% for e in form.mode_reglement.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <aside class="un-carte un-recap p-4 d-grid gap-2" aria-label="Récapitulatif" data-sous-total="{{ sous_total }}">
+            <h2 class="h5">Votre commande</h2>
+            {% for l in lignes %}
+              <div class="d-flex justify-content-between gap-2"><span>{{ l.quantite }} × {{ l.produit.nom }}</span><span class="text-nowrap">{{ l.total|fcfa }}</span></div>
+            {% endfor %}
+            <div class="d-flex justify-content-between border-top pt-2"><span>Sous-total</span><b>{{ sous_total|fcfa }}</b></div>
+            <div class="d-flex justify-content-between"><span>Livraison</span><span data-frais>Selon la zone</span></div>
+            <div class="d-flex justify-content-between border-top pt-2 fs-5 fw-bold text-primary"><span>Total à payer</span><span data-total>{{ sous_total|fcfa }}</span></div>
+            <button class="btn btn-primary mt-2" type="submit"><i class="bi bi-check2-circle"></i> Confirmer ma commande</button>
+            <small class="text-doux">Aucun paiement n’est demandé sur le site. Nous vous contactons pour confirmer la commande avant l’expédition.</small>
+            <small class="text-doux">En confirmant, vous acceptez nos <a href="{% url 'pages:cgv' %}" target="_blank">conditions générales de vente</a>.</small>
+          </aside>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{{ frais_zones|json_script:"frais-zones" }}
+{% endblock %}

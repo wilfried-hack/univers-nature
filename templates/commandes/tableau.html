@@ -1,0 +1,27 @@
+{% load boutique %}
+{% if commandes %}
+<div class="un-carte overflow-hidden">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Numéro</th><th>Date</th><th class="text-end">Total</th><th>Paiement</th><th>Statut</th></tr></thead>
+      <tbody>
+      {% for c in commandes %}
+        <tr>
+          <td><a class="fw-bold" href="{{ c.get_absolute_url }}">{{ c.numero }}</a></td>
+          <td>{{ c.cree_le|date:"d/m/Y" }}</td>
+          <td class="text-end text-nowrap">{{ c.total|fcfa }}</td>
+          <td><span class="un-statut un-statut--{{ c.statut_paiement }}">{{ c.get_statut_paiement_display }}</span></td>
+          <td><span class="un-statut un-statut--{{ c.statut }}">{{ c.get_statut_display }}</span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="un-carte text-center p-5">
+  <h2 class="h5">Aucune commande pour le moment</h2>
+  <p class="text-doux">Vos commandes apparaîtront ici.</p>
+  <a class="btn btn-primary" href="{% url 'catalogue:liste' %}">Aller à la boutique</a>
+</div>
+{% endif %}

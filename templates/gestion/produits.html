@@ -1,0 +1,57 @@
+{% extends 'gestion/base.html' %}
+{% load boutique %}
+{% block titre %}Produits{% endblock %}
+
+{% block contenu %}
+<div class="g-ph">
+  <div><h1>Les <em>produits.</em></h1><p>Fiches produits, prix, promotions et stocks.</p></div>
+  <a class="btn btn-primary" href="{% url 'gestion:produit_ajouter' %}"><i class="bi bi-plus-lg"></i> Ajouter un produit</a>
+</div>
+
+<form class="g-carte p-3 mb-4 row g-2 align-items-end" method="get" role="search">
+  <div class="col-md-6"><label class="form-label" for="q">Rechercher</label><input class="form-control" id="q" type="search" name="q" value="{{ q }}" placeholder="Nom du produit"></div>
+  <div class="col-md-4"><label class="form-label" for="categorie">Catégorie</label>
+    <select class="form-select" id="categorie" name="categorie"><option value="">Toutes</option>{% for c in categories %}<option value="{{ c.slug }}"{% if categorie == c.slug %} selected{% endif %}>{{ c.nom }}</option>{% endfor %}</select></div>
+  <div class="col-md-2 d-grid"><button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Filtrer</button></div>
+</form>
+
+<div class="g-carte overflow-hidden">
+  <div class="table-responsive">
+    <table class="table g-table table-hover">
+      <thead><tr><th>Produit</th><th class="text-end">Prix</th><th>Stock</th><th>État</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+      {% for p in produits %}
+        <tr>
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              {% if p.image %}<img class="g-vignette" src="{{ p.image.url }}" alt="">{% else %}<span class="g-vignette"><i class="bi bi-image"></i></span>{% endif %}
+              <span><a class="fw-bold" href="{% url 'gestion:produit_modifier' p.pk %}">{{ p.nom }}</a><br><small class="text-secondary">{{ p.categorie.nom }} · {{ p.contenance }}</small></span>
+            </div>
+          </td>
+          <td class="text-end text-nowrap">{% if p.en_promo %}<b>{{ p.prix_promo|fcfa }}</b><br><small class="text-secondary text-decoration-line-through">{{ p.prix|fcfa }}</small>{% else %}<b>{{ p.prix|fcfa }}</b>{% endif %}</td>
+          <td>
+            <form class="d-flex gap-1" method="post" action="{% url 'gestion:produit_stock' p.pk %}">{% csrf_token %}
+              <input class="form-control form-control-sm{% if p.stock <= seuil %} border-warning{% endif %}" style="width:80px" type="number" min="0" name="stock" value="{{ p.stock }}" aria-label="Stock de {{ p.nom }}">
+              <button class="btn btn-outline-primary btn-sm" type="submit" title="Enregistrer le stock"><i class="bi bi-check2"></i></button>
+            </form>
+          </td>
+          <td>
+            {% if p.actif %}<span class="g-etat g-etat--publie">Visible</span>{% else %}<span class="g-etat g-etat--masque">Masqué</span>{% endif %}
+            {% if p.populaire %}<span class="badge text-bg-light border">Accueil</span>{% endif %}
+          </td>
+          <td class="text-end text-nowrap">
+            <a class="btn btn-outline-primary btn-sm" href="{{ p.get_absolute_url }}" target="_blank" title="Voir sur le site"><i class="bi bi-box-arrow-up-right"></i></a>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'gestion:produit_modifier' p.pk %}"><i class="bi bi-pencil"></i> Modifier</a>
+            <form class="d-inline" method="post" action="{% url 'gestion:produit_supprimer' p.pk %}" onsubmit="return confirm('Supprimer « {{ p.nom|escapejs }} » ?')">{% csrf_token %}
+              <button class="btn btn-outline-danger btn-sm" type="submit" title="Supprimer"><i class="bi bi-trash3"></i></button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="text-center text-secondary py-5">Aucun produit. <a href="{% url 'gestion:produit_ajouter' %}">Ajouter le premier produit</a>.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

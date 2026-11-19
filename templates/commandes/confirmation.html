@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load boutique %}
+{% block titre %}Commande {{ commande.numero }} enregistrée{% endblock %}
+
+{% block contenu %}
+<section class="un-entete-page">
+  <div class="container">
+    <h1><i class="bi bi-check-circle"></i> Merci, votre commande est enregistrée</h1>
+    <p>Numéro de commande : <b>{{ commande.numero }}</b>. Conservez-le pour le suivi.</p>
+  </div>
+</section>
+
+<section class="un-sec pt-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        {% if commande.mode_reglement == 'mobile_money' %}
+          {% if commande.attend_preuve %}
+            {% include 'commandes/_preuve_paiement.html' with depuis='confirmation' %}
+          {% else %}
+            <div class="alert alert-success"><i class="bi bi-check-circle"></i> Votre paiement Mobile Money a été vérifié.</div>
+          {% endif %}
+        {% else %}
+        <div class="un-encadre">
+          <h2 class="h5">Paiement à la livraison</h2>
+          <ol class="mb-0">
+            <li class="mb-2">Nous vous contactons par téléphone ou WhatsApp au <b>{{ commande.telephone }}</b> pour confirmer la commande.</li>
+            <li class="mb-2">Nous préparons votre commande et la livrons à l’adresse indiquée.</li>
+            <li>Vous payez <span class="un-gros">{{ commande.total|fcfa }}</span> au livreur, en espèces ou par Mobile Money, et vous recevez un reçu.</li>
+          </ol>
+          <a class="btn btn-whatsapp mt-3" href="{% lien_whatsapp message_wa %}" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i> Une question ? Écrivez-nous</a>
+        </div>
+        {% endif %}
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <a class="btn btn-outline-primary" href="{{ commande.get_absolute_url }}"><i class="bi bi-truck"></i> Suivre ma commande</a>
+          <a class="btn btn-outline-primary" href="{% url 'catalogue:liste' %}">Continuer mes achats</a>
+        </div>
+      </div>
+      <div class="col-lg-4">{% include 'commandes/recap.html' %}</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block titre %}Page introuvable{% endblock %}
+
+{% block contenu %}
+<section class="un-sec">
+  <div class="container">
+    <div class="un-carte text-center p-5">
+      <h2>Page introuvable</h2>
+      <p>Cette page n’existe pas ou ce produit n’est plus disponible.</p>
+      <a class="btn btn-primary" href="{% url 'catalogue:liste' %}">Retour à la boutique</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

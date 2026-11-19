@@ -1,0 +1,31 @@
+{% load boutique %}
+<article class="un-carte un-produit">
+  <a class="un-produit-img" href="{{ produit.get_absolute_url }}" tabindex="-1" aria-hidden="true">
+    {% if produit.image %}<img src="{{ produit.image.url }}" alt="" loading="lazy">{% else %}{% icone 'feuille' 64 %}{% endif %}
+    <span class="un-badges">
+      {% if not produit.en_stock %}<span class="badge text-bg-danger">Rupture</span>{% endif %}
+      {% if produit.en_promo %}<span class="badge badge-promo">Promo</span>{% endif %}
+      {% if produit.nouveaute %}<span class="badge text-bg-primary">Nouveau</span>{% endif %}
+      {% if produit.fait_main %}<span class="badge badge-blanc">Fait main</span>{% endif %}
+    </span>
+  </a>
+  <div class="d-flex flex-column flex-grow-1 p-3">
+    <span class="un-produit-cat">{{ produit.categorie.nom }}</span>
+    <h3><a href="{{ produit.get_absolute_url }}">{{ produit.nom }}</a></h3>
+    <p class="un-produit-desc mb-0">{{ produit.description_courte }}</p>
+    <div class="d-flex align-items-center justify-content-between gap-2 mt-3 pt-3 border-top">
+      <div>
+        <div class="un-prix">{{ produit.prix_actuel|fcfa }}{% if produit.en_promo %}<s>{{ produit.prix|fcfa }}</s>{% endif %}</div>
+        <small class="text-doux">{{ produit.contenance }}</small>
+      </div>
+      {% if produit.en_stock %}
+      <form method="post" action="{% url 'panier:ajouter' produit.pk %}">
+        {% csrf_token %}<input type="hidden" name="suivant" value="{{ request.get_full_path }}">
+        <button class="btn btn-primary btn-sm" type="submit" aria-label="Ajouter {{ produit.nom }} au panier"><i class="bi bi-bag-plus"></i> Ajouter</button>
+      </form>
+      {% else %}
+      <a class="btn btn-outline-primary btn-sm" href="{{ produit.get_absolute_url }}">Voir</a>
+      {% endif %}
+    </div>
+  </div>
+</article>

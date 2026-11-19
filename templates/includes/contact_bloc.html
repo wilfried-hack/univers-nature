@@ -1,0 +1,33 @@
+{% load boutique %}
+<section id="contact" class="un-sec">
+  <div class="container">
+    <div class="un-titre"><h2>Contactez-nous</h2><p>Une question sur un produit ou une commande ? Nous vous répondons rapidement.</p></div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="un-carte h-100 p-4 text-center">
+          <span class="un-rond un-rond--wa mb-3"><i class="bi bi-whatsapp"></i></span>
+          <h3 class="h5">WhatsApp</h3>
+          <p class="fw-bold mb-3">{{ boutique.TELEPHONE }}</p>
+          <a class="btn btn-whatsapp btn-sm" href="{% lien_whatsapp 'Bonjour, j’ai une question.' %}" target="_blank" rel="noopener noreferrer">Écrire sur WhatsApp</a>
+          <small class="d-block mt-2 text-doux">{{ boutique.HORAIRES_WHATSAPP }}</small>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="un-carte h-100 p-4 text-center">
+          <span class="un-rond mb-3"><i class="bi bi-telephone"></i></span>
+          <h3 class="h5">Téléphone</h3>
+          <p class="fw-bold mb-3">{{ boutique.TELEPHONE }}</p>
+          <a class="btn btn-outline-primary btn-sm" href="tel:{{ boutique.TELEPHONE_LIEN }}">Appeler</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="un-carte h-100 p-4 text-center">
+          <span class="un-rond mb-3"><i class="bi bi-geo-alt"></i></span>
+          <h3 class="h5">Où nous trouver</h3>
+          <p class="fw-bold mb-3">{{ boutique.ADRESSE }}</p>
+          <a class="btn btn-outline-primary btn-sm" href="https://www.google.com/maps/search/?api=1&amp;query={{ boutique.ADRESSE|urlencode }}" target="_blank" rel="noopener noreferrer">Voir sur la carte</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

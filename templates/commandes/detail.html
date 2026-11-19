@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load boutique %}
+{% block titre %}Suivi de la commande {{ commande.numero }}{% endblock %}
+
+{% block contenu %}
+{% if user.is_authenticated %}{% url 'commandes:mes_commandes' as url_mes %}{% endif %}
+{% include 'includes/entete_page.html' with titre='Commande '|add:commande.numero texte='Statut actuel : '|add:commande.get_statut_display fil_url=url_mes fil_nom='Mes commandes' %}
+
+<section class="un-sec pt-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="un-carte p-4">
+          <h2 class="h5 mb-3">Suivi</h2>
+          {% if commande.statut == 'annulee' %}
+            <div class="alert alert-danger mb-0">Cette commande a été annulée. Pour toute question, écrivez-nous sur WhatsApp.</div>
+          {% else %}
+            {% with s=commande.statut %}
+            <div class="un-suivi row row-cols-1 row-cols-sm-5 g-2 mx-0">
+              <div class="col is-fait">Reçue</div>
+              <div class="col{% if s == 'confirmee' or s == 'preparation' or s == 'expediee' or s == 'livree' %} is-fait{% endif %}">Confirmée</div>
+              <div class="col{% if s == 'preparation' or s == 'expediee' or s == 'livree' %} is-fait{% endif %}">En préparation</div>
+              <div class="col{% if s == 'expediee' or s == 'livree' %} is-fait{% endif %}">Expédiée</div>
+              <div class="col{% if s == 'livree' %} is-fait{% endif %}">Livrée</div>
+            </div>
+            {% endwith %}
+            {% if commande.attend_preuve %}
+              <div class="mt-4">{% include 'commandes/_preuve_paiement.html' with depuis='suivi' %}</div>
+            {% endif %}
+          {% endif %}
+          <a class="btn btn-whatsapp mt-4" href="{% lien_whatsapp 'Bonjour, j’ai une question sur ma commande '|add:commande.numero|add:'.' %}" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i> Une question sur ma commande</a>
+        </div>
+      </div>
+      <div class="col-lg-4">{% include 'commandes/recap.html' %}</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

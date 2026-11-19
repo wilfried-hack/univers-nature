@@ -1,0 +1,101 @@
+/* ==========================================================
+   Espace de gestion (administrateur)
+   Repris de l'interface « plateforme » MEDIATECH : barre latérale
+   en dégradé, onglet actif aux coins arrondis inversés, cartes
+   d'indicateurs, tableaux avec mise à jour du statut en ligne.
+   Couleurs : palette nature du site. Chargé après Bootstrap.
+   ========================================================== */
+:root{
+  --vert:#2F6B3F; --vert-fonce:#24532F; --vert-nuit:#1C4226; --vert-clair:#3E8250;
+  --pale:#F3F6EF; --pale2:#E2EBD9; --trait:#DCE4D3; --texte:#22312A; --doux:#5C6B5F;
+  --terre:#B8793F; --terre-pale:#F6EADB;
+  --cote:260px;
+  --bs-primary:var(--vert); --bs-primary-rgb:47,107,63;
+  --bs-body-font-family:'Times New Roman',Times,serif; --bs-body-color:var(--texte); --bs-body-bg:var(--pale);
+  --bs-heading-color:var(--vert-nuit); --bs-link-color:var(--vert); --bs-link-color-rgb:47,107,63; --bs-link-hover-color:var(--vert-fonce);
+  --bs-border-color:var(--trait); --bs-border-radius:.75rem;
+}
+body{min-height:100vh}
+
+/* ---------- Structure ---------- */
+.g-app{display:flex;min-height:100vh}
+.g-col{flex:1;min-width:0;display:flex;flex-direction:column}
+.g-main{width:100%;max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,40px);flex:1}
+.g-top{display:flex;align-items:center;gap:12px;padding:12px 18px;background:#fff;border-bottom:1px solid var(--trait)}
+
+/* ---------- Barre latérale ---------- */
+.g-side{--bs-offcanvas-width:var(--cote);--bs-offcanvas-bg:var(--vert);--bs-offcanvas-color:#fff;
+  background:linear-gradient(172deg,var(--vert-clair) 0%,var(--vert) 55%,var(--vert-nuit) 130%)!important;color:#fff}
+@media(min-width:992px){
+  .g-side{position:sticky;top:0;height:100vh;width:var(--cote);flex:none;overflow-y:auto}
+}
+.g-side .offcanvas-body{display:flex;flex-direction:column;padding:26px 0 20px;height:100%}
+.g-brand{display:flex;align-items:center;gap:12px;padding:0 22px;margin-bottom:30px;color:#fff;text-decoration:none;font-weight:700;line-height:1.2}
+.g-brand img{width:42px;height:42px;border-radius:50%;background:#fff;padding:3px}
+.g-brand small{display:block;font-weight:400;font-size:.8rem;color:rgba(255,255,255,.7)}
+.g-nav{display:flex;flex-direction:column;gap:3px;padding-left:16px}
+.g-titre{margin:18px 0 6px 14px;font-size:.72rem;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.g-lien{position:relative;display:flex;align-items:center;gap:12px;padding:11px 18px;border-radius:14px 0 0 14px;font-weight:700;font-size:.97rem;color:rgba(255,255,255,.8);text-decoration:none;transition:background .2s,color .2s}
+.g-lien i{font-size:1.15rem}
+.g-lien:hover{background:rgba(255,255,255,.1);color:#fff}
+.g-lien .badge{margin-left:auto;background:var(--terre)}
+.g-lien.is-on{background:var(--pale);color:var(--vert-nuit)}
+.g-lien.is-on i{color:var(--vert)}
+/* coins arrondis inversés : l'onglet actif se fond dans la zone de travail */
+.g-lien.is-on::before,.g-lien.is-on::after{content:"";position:absolute;right:0;width:22px;height:22px;pointer-events:none}
+.g-lien.is-on::before{top:-22px;background:radial-gradient(circle at 0 0,transparent 22px,var(--pale) 22.5px)}
+.g-lien.is-on::after{top:100%;background:radial-gradient(circle at 0 100%,transparent 22px,var(--pale) 22.5px)}
+.g-pied{margin-top:auto;padding:20px 20px 0;display:grid;gap:6px}
+.g-user{display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:6px;border-radius:14px;background:rgba(255,255,255,.1)}
+.g-avatar{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:50%;background:#fff;color:var(--vert);font-weight:700}
+.g-user strong{display:block;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-user small{color:rgba(255,255,255,.65)}
+.g-mini{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0;border-radius:10px;background:none;font-size:.92rem;color:rgba(255,255,255,.75);text-decoration:none;text-align:left;width:100%}
+.g-mini:hover{background:rgba(255,255,255,.1);color:#fff}
+.g-sortie{color:#FFC9B8}
+.g-sortie:hover{background:rgba(178,58,46,.45)}
+
+/* ---------- En-tête de page ---------- */
+.g-ph{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.g-ph h1{font-size:clamp(24px,2.6vw,32px);font-weight:800;margin:0}
+.g-ph h1 em{font-style:normal;color:var(--vert)}
+.g-ph p{margin:4px 0 0;color:var(--doux)}
+
+/* ---------- Boutons ---------- */
+.btn{--bs-btn-font-weight:700;--bs-btn-border-radius:.7rem;display:inline-flex;align-items:center;gap:.4rem}
+.btn-primary{--bs-btn-bg:var(--vert);--bs-btn-border-color:var(--vert);--bs-btn-hover-bg:var(--vert-fonce);--bs-btn-hover-border-color:var(--vert-fonce);--bs-btn-active-bg:var(--vert-fonce);--bs-btn-active-border-color:var(--vert-fonce)}
+.btn-outline-primary{--bs-btn-color:var(--vert);--bs-btn-border-color:var(--trait);--bs-btn-bg:#fff;--bs-btn-hover-bg:var(--pale2);--bs-btn-hover-color:var(--vert-fonce);--bs-btn-hover-border-color:var(--trait);--bs-btn-active-bg:var(--pale2);--bs-btn-active-color:var(--vert-fonce)}
+.btn-whatsapp{--bs-btn-color:#128C4A;--bs-btn-bg:#fff;--bs-btn-border-color:#BFE6D0;--bs-btn-hover-color:#fff;--bs-btn-hover-bg:#128C4A;--bs-btn-hover-border-color:#128C4A}
+.form-control,.form-select{border-color:var(--trait)}
+.form-control:focus,.form-select:focus{border-color:var(--vert);box-shadow:0 0 0 .2rem rgba(47,107,63,.18)}
+.form-check-input:checked{background-color:var(--vert);border-color:var(--vert)}
+.form-label{font-weight:700;font-size:.92rem}
+
+/* ---------- Cartes et indicateurs ---------- */
+.g-carte{background:#fff;border:1px solid var(--trait);border-radius:16px}
+.g-kpi{display:flex;align-items:center;gap:14px;padding:18px 20px;height:100%}
+.g-kpi i{display:grid;place-items:center;width:48px;height:48px;flex:none;border-radius:14px;background:var(--pale2);color:var(--vert);font-size:1.4rem}
+.g-kpi span{display:block;color:var(--doux);font-size:.9rem}
+.g-kpi strong{font-size:1.6rem;font-weight:800;color:var(--vert-nuit);line-height:1.2}
+.g-kpi.is-alerte{border-color:#E8C9A4;background:var(--terre-pale)}
+.g-kpi.is-alerte i{background:#fff;color:var(--terre)}
+.g-titre-table{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:30px 0 12px}
+.g-titre-table h2{font-size:1.15rem;margin:0}
+
+/* ---------- Tableaux ---------- */
+.g-table{--bs-table-bg:#fff;--bs-table-hover-bg:var(--pale);margin:0}
+.g-table thead th{background:var(--pale2);color:var(--vert-nuit);font-size:.76rem;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap}
+.g-table td{vertical-align:middle}
+.g-vignette{width:46px;height:46px;flex:none;border-radius:10px;object-fit:cover;background:var(--pale2);display:grid;place-items:center;color:var(--vert)}
+.g-etat{display:inline-block;padding:.2em .7em;border-radius:999px;font-size:.8rem;font-weight:700;white-space:nowrap;background:var(--terre-pale);color:#7A4E22}
+.g-etat--payee,.g-etat--livree,.g-etat--actif,.g-etat--publie{background:#DDF0E1;color:#1F5A30}
+.g-etat--expediee,.g-etat--preparation,.g-etat--confirmee{background:#E3ECF7;color:#284F7A}
+.g-etat--annulee,.g-etat--suspendu,.g-etat--masque{background:#FBEAE7;color:#B23A2E}
+.g-maj{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.g-maj .form-select{width:auto;min-width:130px}
+
+/* Barres simples des statistiques */
+.g-barre{height:10px;border-radius:999px;background:var(--pale2);overflow:hidden}
+.g-barre span{display:block;height:100%;border-radius:999px;background:var(--vert)}
+
+.g-foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--trait);font-size:.88rem;color:var(--doux)}

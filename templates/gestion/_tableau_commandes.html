@@ -1,0 +1,23 @@
+{% load boutique %}
+<div class="g-carte overflow-hidden">
+  <div class="table-responsive">
+    <table class="table g-table table-hover">
+      <thead><tr><th>Référence</th><th>Client</th><th>Zone</th><th class="text-end">Total</th><th>Règlement</th><th>Statut et paiement</th><th></th></tr></thead>
+      <tbody>
+      {% for c in commandes %}
+        <tr>
+          <td><a class="fw-bold" href="{% url 'gestion:commande' c.pk %}">{{ c.numero }}</a><br><small class="text-secondary">{{ c.cree_le|date:"d/m/Y H:i" }}</small></td>
+          <td>{{ c.nom }}<br><a class="small" href="tel:{{ c.telephone }}">{{ c.telephone }}</a></td>
+          <td class="small">{{ c.zone.nom }}</td>
+          <td class="text-end text-nowrap fw-bold">{{ c.total|fcfa }}</td>
+          <td class="small">{% if c.mode_reglement == 'mobile_money' %}<i class="bi bi-phone"></i> Mobile Money{% if c.preuve_a_verifier %}<br><a class="badge text-bg-warning text-decoration-none" href="{% url 'gestion:commande' c.pk %}#preuve">Preuve à vérifier</a>{% endif %}{% else %}<i class="bi bi-cash-coin"></i> À la livraison{% endif %}</td>
+          <td>{% include 'gestion/_maj_commande.html' %}</td>
+          <td><a class="btn btn-outline-primary btn-sm" href="{% url 'gestion:commande' c.pk %}" title="Ouvrir"><i class="bi bi-eye"></i></a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center text-secondary py-5">Aucune commande.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

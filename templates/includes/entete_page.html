@@ -1,0 +1,14 @@
+{# En-tête vert des pages intérieures. Paramètres : titre, texte (facultatif), fil (lien parent facultatif : fil_url + fil_nom) #}
+<section class="un-entete-page">
+  <div class="container">
+    <nav aria-label="Fil d’Ariane">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'pages:accueil' %}">Accueil</a></li>
+        {% if fil_url %}<li class="breadcrumb-item"><a href="{{ fil_url }}">{{ fil_nom }}</a></li>{% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ titre_court|default:titre }}</li>
+      </ol>
+    </nav>
+    <h1>{{ titre }}</h1>
+    {% if texte %}<p>{{ texte }}</p>{% endif %}
+  </div>
+</section>

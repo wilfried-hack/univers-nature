@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load boutique static %}
+{% block titre %}Accueil{% endblock %}
+
+{% block contenu %}
+{# La photo de fond n'est utilisée que si static/img/hero.jpg existe #}
+<section class="un-hero"{% if photo_hero %} style="--photo-hero:url('{% static 'img/hero.jpg' %}')"{% endif %}>
+  <div class="container">
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-lg-6">
+        <p class="un-eyebrow">Produits artisanaux • Livraison à domicile</p>
+        <h1>{{ boutique.SLOGAN }}.</h1>
+        <p class="mt-3">Baumes pour les lèvres et le massage, savons et produits d’entretien : une sélection authentique, aux compositions claires, livrée chez vous. Vous payez à la livraison ou par Mobile Money.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a class="btn btn-blanc" href="{% url 'catalogue:liste' %}">Accéder à la boutique <i class="bi bi-arrow-right"></i></a>
+          <a class="btn btn-ligne-blanc" href="{% url 'pages:a_propos' %}">Notre histoire</a>
+        </div>
+      </div>
+      <div class="col-lg-6 un-hero-art">{% include 'includes/illustration.html' %}</div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="un-atouts row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-0">
+    <div class="col">{% icone 'main' 30 %}<div><b>Fait main</b><span>Préparations artisanales</span></div></div>
+    <div class="col">{% icone 'feuille' 30 %}<div><b>Composition claire</b><span>Ingrédients déclarés</span></div></div>
+    <div class="col"><i class="bi bi-truck"></i><div><b>Livraison</b><span>Frais affichés avant de commander</span></div></div>
+    <div class="col"><i class="bi bi-cash-coin"></i><div><b>Paiement à la livraison</b><span>Ou Mobile Money</span></div></div>
+  </div>
+</div>
+
+<section class="un-sec">
+  <div class="container">
+    <div class="un-titre"><h2>Nos catégories</h2><p>Prendre soin de soi et de sa maison, simplement.</p></div>
+    <div class="row g-4">
+      {% for categorie in categories %}
+      <div class="col-md-6">
+        <a class="un-carte d-flex gap-4 align-items-center p-4 h-100 text-reset text-decoration-none" href="{{ categorie.get_absolute_url }}">
+          <span class="un-rond"><i class="bi {% if forloop.first %}bi-droplet{% else %}bi-house-heart{% endif %}"></i></span>
+          <span>
+            <h3 class="h5 mb-1">{{ categorie.nom }}</h3>
+            <span class="d-block text-doux">{{ categorie.description }}</span>
+            <span class="d-inline-flex align-items-center gap-1 mt-2 fw-bold text-primary">Voir les produits <i class="bi bi-arrow-right"></i></span>
+          </span>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if populaires %}
+<section class="un-sec bg-creme2">
+  <div class="container">
+    <div class="un-titre"><h2>Produits populaires</h2><p>Les préférés de nos clients.</p></div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">{% for produit in populaires %}<div class="col">{% include 'includes/carte_produit.html' %}</div>{% endfor %}</div>
+    <div class="text-center mt-4"><a class="btn btn-primary" href="{% url 'catalogue:liste' %}">Voir toute la boutique <i class="bi bi-arrow-right"></i></a></div>
+  </div>
+</section>
+{% endif %}
+
+{% if nouveautes or promotions %}
+<section class="un-sec">
+  <div class="container">
+    <div class="un-titre"><h2>Nouveautés et promotions</h2><p>À découvrir en ce moment.</p></div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+      {% for produit in promotions %}<div class="col">{% include 'includes/carte_produit.html' %}</div>{% endfor %}
+      {% for produit in nouveautes %}{% if produit not in promotions %}<div class="col">{% include 'includes/carte_produit.html' %}</div>{% endif %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="un-sec bg-creme2">
+  <div class="container">
+    <div class="un-titre"><h2>Qui sommes-nous ?</h2><p>L’authenticité et le savoir-faire au cœur de chaque produit.</p></div>
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-lg-6"><div class="un-vis">{% include 'includes/illustration.html' %}</div></div>
+      <div class="col-lg-6">
+        <p><b>{{ boutique.NOM }}</b> propose des produits de soin, de bien-être et d’entretien domestique authentiques, artisanaux ou fabriqués selon des exigences de qualité précises.</p>
+        <p>Chaque fiche produit indique la composition, le mode d’utilisation et les précautions d’emploi, pour que vous achetiez en toute confiance.</p>
+        <a class="btn btn-primary mt-2" href="{% url 'pages:a_propos' %}">Découvrir notre histoire</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="un-sec">
+  <div class="container">
+    <div class="un-bandeau d-flex flex-column flex-md-row align-items-center gap-4 text-center text-md-start">
+      <span class="un-rond"><i class="bi bi-bag-check"></i></span>
+      <div class="flex-grow-1">
+        <h2>Commandez en ligne, payez à la réception</h2>
+        <p class="mb-0">Choisissez vos produits, indiquez votre adresse : vous voyez les frais de livraison avant de valider, et vous payez à la livraison ou par Mobile Money.</p>
+      </div>
+      <a class="btn btn-blanc" href="{% url 'catalogue:liste' %}">Accéder à la boutique</a>
+    </div>
+  </div>
+</section>
+
+{% include 'includes/contact_bloc.html' %}
+{% endblock %}

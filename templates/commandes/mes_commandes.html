@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block titre %}Mes commandes{% endblock %}
+
+{% block contenu %}
+{% url 'comptes:espace' as url_compte %}
+{% include 'includes/entete_page.html' with titre='Mes commandes' fil_url=url_compte fil_nom='Mon compte' %}
+<section class="un-sec pt-5">
+  <div class="container">{% include 'commandes/tableau.html' %}</div>
+</section>
+{% endblock %}

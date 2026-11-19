@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load boutique %}
+{% block titre %}Mon panier{% endblock %}
+
+{% block contenu %}
+{% include 'includes/entete_page.html' with titre='Mon panier' texte='Vérifiez vos produits et les quantités avant de passer commande.' %}
+
+<section class="un-sec pt-5">
+  <div class="container">
+  {% if lignes %}
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <!-- Téléphone : une carte par produit -->
+        <div class="d-grid gap-3 d-md-none">
+          {% for l in lignes %}
+          <div class="un-carte p-3">
+            <div class="d-flex gap-3">
+              <a href="{{ l.produit.get_absolute_url }}">{% if l.produit.image %}<img class="un-vignette" src="{{ l.produit.image.url }}" alt="">{% else %}<span class="un-vignette">{% icone 'feuille' 26 %}</span>{% endif %}</a>
+              <div class="flex-grow-1 min-w-0">
+                <a class="fw-bold text-reset text-decoration-none" href="{{ l.produit.get_absolute_url }}">{{ l.produit.nom }}</a>
+                <div class="small text-doux">{{ l.produit.contenance }} · {{ l.prix|fcfa }}</div>
+              </div>
+              <form method="post" action="{% url 'panier:retirer' l.produit.pk %}">{% csrf_token %}
+                <button class="btn btn-link text-danger p-1" type="submit" title="Retirer" aria-label="Retirer {{ l.produit.nom }}"><i class="bi bi-trash3"></i></button>
+              </form>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <form class="d-flex gap-1" method="post" action="{% url 'panier:modifier' l.produit.pk %}">
+                {% csrf_token %}
+                <label class="visually-hidden" for="qm{{ l.produit.pk }}">Quantité de {{ l.produit.nom }}</label>
+                <input class="form-control form-control-sm text-center" style="width:64px" id="qm{{ l.produit.pk }}" type="number" name="quantite" value="{{ l.quantite }}" min="0" max="{{ l.produit.stock }}">
+                <button class="btn btn-outline-primary btn-sm" type="submit">OK</button>
+              </form>
+              <b class="text-nowrap">{{ l.total|fcfa }}</b>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Ordinateur et tablette : tableau -->
+        <div class="un-carte overflow-hidden d-none d-md-block">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead><tr><th>Produit</th><th class="text-end">Prix</th><th>Quantité</th><th class="text-end">Total</th><th><span class="visually-hidden">Retirer</span></th></tr></thead>
+              <tbody>
+              {% for l in lignes %}
+                <tr>
+                  <td>
+                    <a class="d-flex align-items-center gap-3 text-reset text-decoration-none" href="{{ l.produit.get_absolute_url }}">
+                      {% if l.produit.image %}<img class="un-vignette" src="{{ l.produit.image.url }}" alt="">{% else %}<span class="un-vignette">{% icone 'feuille' 26 %}</span>{% endif %}
+                      <span><b>{{ l.produit.nom }}</b><br><small class="text-doux">{{ l.produit.contenance }}</small></span>
+                    </a>
+                  </td>
+                  <td class="text-end text-nowrap">{{ l.prix|fcfa }}</td>
+                  <td>
+                    <form class="d-flex gap-1" method="post" action="{% url 'panier:modifier' l.produit.pk %}">
+                      {% csrf_token %}
+                      <label class="visually-hidden" for="q{{ l.produit.pk }}">Quantité de {{ l.produit.nom }}</label>
+                      <input class="form-control form-control-sm text-center" style="width:70px" id="q{{ l.produit.pk }}" type="number" name="quantite" value="{{ l.quantite }}" min="0" max="{{ l.produit.stock }}">
+                      <button class="btn btn-outline-primary btn-sm" type="submit">OK</button>
+                    </form>
+                  </td>
+                  <td class="text-end text-nowrap fw-bold">{{ l.total|fcfa }}</td>
+                  <td>
+                    <form method="post" action="{% url 'panier:retirer' l.produit.pk %}">{% csrf_token %}
+                      <button class="btn btn-link text-danger p-1" type="submit" title="Retirer" aria-label="Retirer {{ l.produit.nom }}"><i class="bi bi-trash3"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <a class="d-inline-block mt-3" href="{% url 'catalogue:liste' %}"><i class="bi bi-arrow-left"></i> Continuer mes achats</a>
+      </div>
+
+      <div class="col-lg-4">
+        <aside class="un-carte un-recap p-4 d-grid gap-2" aria-label="Récapitulatif">
+          <h2 class="h5">Récapitulatif</h2>
+          <div class="d-flex justify-content-between"><span>Sous-total</span><b>{{ sous_total|fcfa }}</b></div>
+          <div class="d-flex justify-content-between"><span>Livraison</span><span class="text-doux">selon la zone</span></div>
+          <ul class="list-unstyled small text-doux mb-1">
+            {% for z in zones %}<li class="d-flex justify-content-between"><span>{{ z.nom }}</span><span>{{ z.frais|fcfa }}</span></li>{% endfor %}
+          </ul>
+          <div class="d-flex justify-content-between border-top pt-2 fs-5 fw-bold text-primary"><span>Total hors livraison</span><span>{{ sous_total|fcfa }}</span></div>
+          <a class="btn btn-primary mt-2" href="{% url 'commandes:passer' %}">Passer commande <i class="bi bi-arrow-right"></i></a>
+          <small class="text-doux">Paiement à la livraison ou par Mobile Money. Aucun paiement en ligne.</small>
+        </aside>
+      </div>
+    </div>
+  {% else %}
+    <div class="un-carte text-center p-5">
+      <i class="bi bi-bag fs-1 text-primary"></i>
+      <h2 class="h4 mt-2">Votre panier est vide</h2>
+      <p class="text-doux">Découvrez nos baumes, savons et produits d’entretien.</p>
+      <a class="btn btn-primary" href="{% url 'catalogue:liste' %}">Aller à la boutique</a>
+    </div>
+  {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'gestion/base.html' %}
+{% load boutique %}
+{% block titre %}Zones de livraison{% endblock %}
+
+{% block contenu %}
+<div class="g-ph"><div><h1>Zones de <em>livraison.</em></h1><p>Frais, délais et modes de règlement acceptés par zone.</p></div></div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="g-carte overflow-hidden">
+      <div class="table-responsive">
+        <table class="table g-table table-hover">
+          <thead><tr><th>Zone</th><th class="text-end">Frais</th><th>Paiement à la livraison</th><th>État</th><th class="text-end">Actions</th></tr></thead>
+          <tbody>
+          {% for z in zones %}
+            <tr{% if edition == z %} class="table-active"{% endif %}>
+              <td><b>{{ z.nom }}</b>{% if z.delai %}<br><small class="text-secondary">{{ z.delai }}</small>{% endif %}</td>
+              <td class="text-end text-nowrap">{{ z.frais|fcfa }}</td>
+              <td>{% if z.paiement_livraison %}<span class="g-etat g-etat--actif">Accepté</span>{% else %}<span class="g-etat">Mobile Money avant expédition</span>{% endif %}</td>
+              <td>{% if z.active %}<span class="g-etat g-etat--actif">Active</span>{% else %}<span class="g-etat g-etat--masque">Inactive</span>{% endif %}</td>
+              <td class="text-end text-nowrap">
+                <a class="btn btn-outline-primary btn-sm" href="{% url 'gestion:zone_modifier' z.pk %}"><i class="bi bi-pencil"></i></a>
+                <form class="d-inline" method="post" action="{% url 'gestion:zone_supprimer' z.pk %}" onsubmit="return confirm('Supprimer cette zone ?')">{% csrf_token %}
+                  <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash3"></i></button>
+                </form>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-center text-secondary py-4">Aucune zone : les clients ne peuvent pas commander tant qu’aucune zone n’est active.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <form class="g-carte p-4 d-grid gap-3" method="post" novalidate>
+      {% csrf_token %}
+      <h2 class="h5 mb-0">{% if edition %}Modifier « {{ edition.nom }} »{% else %}Nouvelle zone{% endif %}</h2>
+      {% include 'includes/champ.html' with champ=form.nom %}
+      <div class="row g-3">
+        <div class="col-6">{% include 'includes/champ.html' with champ=form.frais %}</div>
+        <div class="col-6">{% include 'includes/champ.html' with champ=form.delai %}</div>
+      </div>
+      {% include 'includes/champ.html' with champ=form.paiement_livraison %}
+      {% include 'includes/champ.html' with champ=form.active %}
+      {% include 'includes/champ.html' with champ=form.ordre %}
+      <button class="btn btn-primary" type="submit"><i class="bi bi-check2"></i> Enregistrer</button>
+      {% if edition %}<a class="btn btn-outline-primary" href="{% url 'gestion:zones' %}">Annuler</a>{% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}

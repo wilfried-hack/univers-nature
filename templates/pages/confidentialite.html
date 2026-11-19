@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block titre %}Politique de confidentialité{% endblock %}
+
+{% block contenu %}
+<section class="un-entete-page">
+  <div class="container"><h1>Politique de confidentialité</h1><p>Modèle à faire relire avant la mise en ligne.</p></div>
+</section>
+<section class="un-sec">
+  <div class="container un-prose">
+    <h2>Données collectées</h2>
+    <p>Nous collectons uniquement les informations nécessaires au traitement des commandes : nom, numéro de téléphone, e-mail (facultatif) et adresse de livraison.</p>
+    <h2>Utilisation</h2>
+    <p>Ces données servent à confirmer, préparer et livrer les commandes, et à vous contacter à leur sujet. Elles ne sont ni vendues ni cédées à des tiers, sauf au livreur pour la remise du colis.</p>
+    <h2>Sécurité</h2>
+    <p>Les mots de passe sont chiffrés et l’accès à l’administration est réservé aux personnes autorisées. Aucune donnée bancaire n’est enregistrée sur le site.</p>
+    <h2>Vos droits</h2>
+    <p>Vous pouvez demander la consultation, la modification ou la suppression de vos données en nous écrivant à {{ boutique.EMAIL }}.</p>
+  </div>
+</section>
+{% endblock %}

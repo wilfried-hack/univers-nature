@@ -1,0 +1,67 @@
+{% extends 'gestion/base.html' %}
+{% block titre %}{% if produit %}Modifier {{ produit.nom }}{% else %}Ajouter un produit{% endif %}{% endblock %}
+
+{% block contenu %}
+<nav aria-label="Fil d’Ariane"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'gestion:produits' %}">Produits</a></li><li class="breadcrumb-item active" aria-current="page">{% if produit %}{{ produit.nom }}{% else %}Nouveau produit{% endif %}</li></ol></nav>
+<div class="g-ph">
+  <div><h1>{% if produit %}Modifier <em>{{ produit.nom }}</em>{% else %}Ajouter un <em>produit.</em>{% endif %}</h1><p>Les champs marqués d’un astérisque sont obligatoires.</p></div>
+  {% if produit %}<a class="btn btn-outline-primary" href="{{ produit.get_absolute_url }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Voir sur le site</a>{% endif %}
+</div>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.errors %}<div class="alert alert-danger">Merci de corriger les champs signalés en rouge.</div>{% endif %}
+  <div class="row g-4">
+    <div class="col-lg-8 d-grid gap-4">
+      <div class="g-carte p-4">
+        <h2 class="h5 mb-3">Présentation</h2>
+        <div class="row g-3">
+          <div class="col-md-7">{% include 'includes/champ.html' with champ=form.nom %}</div>
+          <div class="col-md-5">{% include 'includes/champ.html' with champ=form.categorie %}</div>
+          <div class="col-12">{% include 'includes/champ.html' with champ=form.description_courte %}</div>
+          <div class="col-12">{% include 'includes/champ.html' with champ=form.description %}</div>
+        </div>
+      </div>
+      <div class="g-carte p-4">
+        <h2 class="h5 mb-3">Informations du produit</h2>
+        <p class="small text-secondary">À renseigner avec soin : ces informations s’affichent sur la fiche produit (section 2 du cahier des charges).</p>
+        <div class="d-grid gap-3">
+          {% include 'includes/champ.html' with champ=form.composition %}
+          {% include 'includes/champ.html' with champ=form.caracteristiques %}
+          {% include 'includes/champ.html' with champ=form.utilisation %}
+          {% include 'includes/champ.html' with champ=form.precautions %}
+          {% include 'includes/champ.html' with champ=form.fabricant %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 d-grid gap-4 align-content-start">
+      <div class="g-carte p-4 d-grid gap-3">
+        <h2 class="h5 mb-0">Photo</h2>
+        {% if produit.image %}<img class="img-fluid rounded" src="{{ produit.image.url }}" alt="Photo actuelle">{% endif %}
+        {% include 'includes/champ.html' with champ=form.image %}
+      </div>
+      <div class="g-carte p-4 d-grid gap-3">
+        <h2 class="h5 mb-0">Prix et stock</h2>
+        {% include 'includes/champ.html' with champ=form.prix %}
+        {% include 'includes/champ.html' with champ=form.prix_promo %}
+        {% include 'includes/champ.html' with champ=form.contenance %}
+        {% include 'includes/champ.html' with champ=form.stock %}
+      </div>
+      <div class="g-carte p-4 d-grid gap-2">
+        <h2 class="h5 mb-1">Affichage</h2>
+        {% include 'includes/champ.html' with champ=form.actif %}
+        {% include 'includes/champ.html' with champ=form.populaire %}
+        {% include 'includes/champ.html' with champ=form.nouveaute %}
+        {% include 'includes/champ.html' with champ=form.fait_main %}
+        {% include 'includes/champ.html' with champ=form.naturel %}
+        <small class="text-secondary">« Fait main » et « Naturel » doivent correspondre aux caractéristiques réelles du produit.</small>
+      </div>
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary btn-lg" type="submit"><i class="bi bi-check2"></i> Enregistrer</button>
+        <a class="btn btn-outline-primary" href="{% url 'gestion:produits' %}">Annuler</a>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

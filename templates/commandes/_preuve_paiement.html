@@ -1,0 +1,35 @@
+{% load boutique %}
+{# Paiement Mobile Money : instructions + envoi de la preuve sur le site. Paramètre : depuis ('confirmation' ou 'suivi') #}
+<div class="un-encadre{% if not commande.preuve_envoyee_le %} un-encadre--terre{% endif %}">
+  <h2 class="h5"><i class="bi bi-phone"></i> Payer par Mobile Money</h2>
+  <ol class="mb-3">
+    <li class="mb-2">Envoyez <span class="un-gros">{{ commande.total|fcfa }}</span> au numéro marchand :<br>
+        <span class="un-gros">{{ boutique.MOBILE_MONEY_NUMERO }}</span> ({{ boutique.MOBILE_MONEY_NOM }})</li>
+    <li class="mb-2">Envoyez-nous ci-dessous la <b>référence du transfert</b> ou une <b>capture d’écran</b> du message de confirmation.</li>
+    <li>Nous vérifions la réception du paiement, puis nous préparons et expédions votre commande.</li>
+  </ol>
+
+  {% if commande.preuve_envoyee_le %}
+    <div class="alert alert-success mb-3">
+      <i class="bi bi-check-circle"></i> Preuve reçue le {{ commande.preuve_envoyee_le|date:"d/m/Y à H:i" }}
+      {% if commande.reference_transfert %} — référence <b>{{ commande.reference_transfert }}</b>{% endif %}
+      {% if commande.capture_paiement %} — capture d’écran jointe{% endif %}.
+      Nous vérifions le paiement.
+    </div>
+    <button class="btn btn-outline-primary btn-sm mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#form-preuve" aria-expanded="{% if form_preuve.errors %}true{% else %}false{% endif %}" aria-controls="form-preuve">
+      Envoyer une autre preuve
+    </button>
+  {% endif %}
+
+  <form id="form-preuve" class="un-carte p-3 d-grid gap-3{% if commande.preuve_envoyee_le %} collapse{% if form_preuve.errors %} show{% endif %}{% endif %}"
+        method="post" action="{% url 'commandes:envoyer_preuve' commande.numero %}" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="depuis" value="{{ depuis }}">
+    {% if form_preuve.non_field_errors %}<div class="alert alert-danger mb-0">{{ form_preuve.non_field_errors|join:" " }}</div>{% endif %}
+    {% include 'includes/champ.html' with champ=form_preuve.reference_transfert %}
+    {% include 'includes/champ.html' with champ=form_preuve.capture_paiement %}
+    <div><button class="btn btn-primary" type="submit"><i class="bi bi-send"></i> Envoyer ma preuve de paiement</button></div>
+  </form>
+
+  <p class="small text-doux mt-3 mb-0"><i class="bi bi-shield-lock"></i> Nous ne vous demanderons jamais votre code secret ou votre code PIN Mobile Money. Votre capture d’écran n’est visible que par notre équipe.</p>
+</div>

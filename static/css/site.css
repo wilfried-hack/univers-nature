@@ -1,0 +1,185 @@
+/* ==========================================================
+   Univers Nature & Bien-être — thème du site public
+   Chargé APRÈS Bootstrap (static/vendor/bootstrap) :
+   - redéfinit les couleurs Bootstrap avec la palette nature ;
+   - garde l'identité du thème MEDIATECH (haut de page, titres à filets,
+     cartes, bloc contact, pied de page) adaptée en vert / crème.
+   Pour changer les couleurs ou la police : modifier :root ci-dessous.
+   ========================================================== */
+:root{
+  --vert:#2F6B3F; --vert-fonce:#24532F; --vert-clair:#3E8250;
+  --sauge:#A9C29A; --pale:#EEF3E8; --pale2:#E2EBD9;
+  --creme:#F7F4EC; --creme2:#EFEADD; --trait:#D9E2CF;
+  --texte:#2B3B2F; --doux:#5C6B5F; --terre:#B8793F; --terre-pale:#F6EADB;
+  --wa:#1FA855; --wa-fonce:#178A45;
+  --ombre:0 8px 24px rgba(47,107,63,.09); --ombre-forte:0 16px 34px rgba(47,107,63,.18);
+  --police:'Times New Roman',Times,serif;
+
+  /* Couleurs et police de Bootstrap */
+  --bs-primary:var(--vert); --bs-primary-rgb:47,107,63;
+  --bs-success:var(--vert); --bs-success-rgb:47,107,63;
+  --bs-warning-rgb:184,121,63;
+  --bs-body-font-family:var(--police); --bs-body-font-size:1.05rem; --bs-body-line-height:1.7;
+  --bs-body-color:var(--texte); --bs-body-bg:var(--creme);
+  --bs-heading-color:var(--vert-fonce);
+  --bs-link-color:var(--vert); --bs-link-color-rgb:47,107,63; --bs-link-hover-color:var(--vert-fonce);
+  --bs-border-color:var(--trait); --bs-secondary-color:var(--doux);
+  --bs-border-radius:.75rem; --bs-border-radius-lg:1rem;
+  --bs-focus-ring-color:rgba(47,107,63,.25);
+}
+body{font-family:var(--police)}
+h1,h2,h3,h4{font-weight:700}
+.text-doux{color:var(--doux)!important}
+.bg-creme2{background:var(--creme2)}
+.bg-pale{background:var(--pale)}
+
+/* ---------- Boutons (arrondis comme le thème d'origine) ---------- */
+.btn{--bs-btn-border-radius:999px;--bs-btn-font-weight:700;--bs-btn-padding-x:1.5rem;--bs-btn-padding-y:.6rem;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;transition:transform .2s,background .2s,color .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-sm{--bs-btn-padding-x:1rem;--bs-btn-padding-y:.35rem}
+.btn-primary{--bs-btn-bg:var(--vert);--bs-btn-border-color:var(--vert);--bs-btn-hover-bg:var(--vert-fonce);--bs-btn-hover-border-color:var(--vert-fonce);--bs-btn-active-bg:var(--vert-fonce);--bs-btn-active-border-color:var(--vert-fonce);--bs-btn-disabled-bg:var(--vert);--bs-btn-disabled-border-color:var(--vert)}
+.btn-outline-primary{--bs-btn-color:var(--vert);--bs-btn-border-color:var(--vert);--bs-btn-hover-bg:var(--vert);--bs-btn-hover-border-color:var(--vert);--bs-btn-active-bg:var(--vert);--bs-btn-active-border-color:var(--vert)}
+.btn-whatsapp{--bs-btn-color:#fff;--bs-btn-bg:var(--wa);--bs-btn-border-color:var(--wa);--bs-btn-hover-color:#fff;--bs-btn-hover-bg:var(--wa-fonce);--bs-btn-hover-border-color:var(--wa-fonce);--bs-btn-active-bg:var(--wa-fonce);--bs-btn-active-color:#fff}
+.btn-blanc{--bs-btn-color:var(--vert);--bs-btn-bg:#fff;--bs-btn-border-color:#fff;--bs-btn-hover-color:var(--vert-fonce);--bs-btn-hover-bg:var(--pale);--bs-btn-hover-border-color:var(--pale)}
+.btn-ligne-blanc{--bs-btn-color:#fff;--bs-btn-border-color:rgba(255,255,255,.85);--bs-btn-hover-color:var(--vert);--bs-btn-hover-bg:#fff;--bs-btn-hover-border-color:#fff}
+
+/* Formulaires */
+.form-control,.form-select{border-radius:.65rem;border-color:var(--trait);padding:.6rem .85rem}
+.form-control:focus,.form-select:focus{border-color:var(--vert);box-shadow:0 0 0 .25rem rgba(47,107,63,.18)}
+.form-check-input:checked{background-color:var(--vert);border-color:var(--vert)}
+.form-label{font-weight:700;font-size:.95rem}
+
+/* ---------- En-tête et navigation ---------- */
+.un-entete{background:#fff;border-bottom:1px solid var(--trait);transition:box-shadow .25s;z-index:1030}
+.un-entete.is-scrolled{box-shadow:0 6px 24px rgba(47,107,63,.14)}
+.un-entete .navbar{min-height:78px}
+.navbar-brand img{height:52px;width:auto}
+.un-marque-nom{display:grid;line-height:1.15}
+.un-marque-nom b{font-size:1.15rem;color:var(--vert-fonce)}
+.un-marque-nom small{font-size:.85rem;color:var(--doux);font-style:italic}
+.un-entete .nav-link{position:relative;font-weight:700;color:var(--vert-fonce);padding:.55rem .9rem!important;border-radius:.5rem}
+.un-entete .nav-link:hover{background:var(--pale);color:var(--vert)}
+.un-entete .nav-link.active{color:var(--vert)}
+@media(min-width:992px){.un-entete .nav-link.active::after{content:"";position:absolute;left:.9rem;right:.9rem;bottom:.15rem;height:3px;border-radius:3px;background:var(--vert)}}
+.un-outil{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;color:var(--vert-fonce);font-size:1.3rem}
+.un-outil:hover{background:var(--pale);color:var(--vert)}
+.un-outil .badge{position:absolute;top:2px;right:-2px;background:var(--terre)}
+/* Téléphone : logo, nom, compte, panier et menu sur une seule ligne */
+@media(max-width:575.98px){
+  .un-entete .navbar{min-height:64px}
+  .navbar-brand{min-width:0;margin-right:.25rem}
+  .navbar-brand img{height:40px}
+  .un-marque-nom b{font-size:.95rem;line-height:1.15;max-width:9.5em;white-space:normal}
+  .un-outil{width:38px;height:38px;font-size:1.15rem}
+  .un-entete .navbar-toggler{padding:.2rem .45rem}
+}
+
+/* ---------- Haut de page (accueil) ---------- */
+.un-hero{position:relative;overflow:hidden;color:#fff;background-color:var(--vert);
+  background-image:linear-gradient(105deg,rgba(36,83,47,.96) 0%,rgba(47,107,63,.86) 50%,rgba(47,107,63,.55) 100%),var(--photo-hero,none);
+  background-size:cover;background-position:center;padding:56px 0 110px}
+.un-eyebrow{display:inline-block;margin-bottom:1.1rem;padding:.35rem 1rem;border:1px solid rgba(255,255,255,.4);border-radius:999px;font-weight:700;background:rgba(255,255,255,.1)}
+.un-hero h1{color:#fff;font-size:clamp(28px,3.9vw,42px);max-width:20ch}
+.un-hero p{max-width:52ch}
+.un-hero-art svg{display:block;width:100%;height:auto;filter:drop-shadow(0 20px 36px rgba(10,30,15,.35))}
+
+/* En-tête des pages intérieures */
+.un-entete-page{background:var(--vert);color:#fff;padding:44px 0 48px}
+.un-entete-page h1{color:#fff;font-size:clamp(26px,3.4vw,36px);margin:0}
+.un-entete-page p{margin:.6rem 0 0;max-width:60ch}
+.un-entete-page .breadcrumb{--bs-breadcrumb-divider-color:rgba(255,255,255,.7);--bs-breadcrumb-item-active-color:#fff;margin-bottom:.6rem}
+.un-entete-page .breadcrumb a{color:#fff}
+
+/* ---------- Atouts sous le haut de page ---------- */
+.un-atouts{position:relative;z-index:5;margin-top:-56px;background:#fff;border:1px solid var(--trait);border-radius:1rem;box-shadow:0 14px 40px rgba(47,107,63,.16);overflow:hidden}
+.un-atouts .col{display:flex;gap:.8rem;align-items:center;padding:1.2rem 1.4rem}
+.un-atouts .col+.col{border-left:1px solid var(--trait)}
+.un-atouts i,.un-atouts svg{flex:none;font-size:1.8rem;color:var(--vert)}
+.un-atouts b{display:block;color:var(--vert-fonce)}
+.un-atouts span{font-size:.9rem;color:var(--doux)}
+@media(max-width:991.98px){.un-atouts .col+.col{border-left:0;border-top:1px solid var(--trait)}}
+
+/* ---------- Sections et titres à filets ---------- */
+.un-sec{padding:72px 0}
+.un-titre{text-align:center;margin-bottom:2.5rem}
+.un-titre h2{display:flex;align-items:center;justify-content:center;gap:1.4rem;font-size:1.25rem;text-transform:uppercase;letter-spacing:.6px;margin:0}
+.un-titre h2::before,.un-titre h2::after{content:"";flex:1;max-width:150px;height:1px;background:var(--sauge)}
+.un-titre p{margin:.6rem 0 0;color:var(--doux)}
+@media(max-width:575.98px){.un-sec{padding:52px 0}.un-titre h2::before,.un-titre h2::after{max-width:36px}}
+
+/* ---------- Cartes (catégories, produits, valeurs, contact) ---------- */
+.un-carte{background:#fff;border:1px solid var(--trait);border-radius:1rem;box-shadow:var(--ombre);transition:transform .25s,box-shadow .25s,border-color .25s}
+a.un-carte:hover,.un-produit:hover{transform:translateY(-4px);box-shadow:var(--ombre-forte);border-color:var(--vert)}
+.un-rond{display:inline-grid;place-items:center;width:72px;height:72px;flex:none;border-radius:50%;background:var(--pale2);color:var(--vert);font-size:2rem}
+.un-rond--wa{background:#E3F6EA;color:var(--wa)}
+
+.un-produit{height:100%;display:flex;flex-direction:column;overflow:hidden}
+.un-produit-img{position:relative;display:grid;place-items:center;aspect-ratio:4/3;background:var(--pale);color:var(--sauge);overflow:hidden}
+.un-produit-img img{width:100%;height:100%;object-fit:cover}
+.un-badges{position:absolute;top:12px;left:12px;display:flex;flex-wrap:wrap;gap:6px}
+.un-badges .badge{font-size:.78rem;border-radius:999px;padding:.35em .8em}
+.badge-promo{background:var(--terre)}
+.badge-blanc{background:#fff;color:var(--vert-fonce);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.un-produit-cat{font-size:.8rem;font-weight:700;color:var(--vert-clair);text-transform:uppercase;letter-spacing:.8px}
+.un-produit h3{font-size:1.15rem;margin:.2rem 0 .4rem}
+.un-produit h3 a{color:inherit;text-decoration:none}
+.un-produit-desc{flex:1;color:var(--doux);font-size:.95rem}
+.un-prix{font-size:1.15rem;font-weight:700;color:var(--vert-fonce)}
+.un-prix s{margin-left:.4rem;font-size:.9rem;font-weight:400;color:var(--doux)}
+
+/* Bloc image + texte */
+.un-vis{border-radius:18px;overflow:hidden;background:var(--pale2);box-shadow:0 14px 36px rgba(47,107,63,.2)}
+.un-vis svg,.un-vis img{display:block;width:100%;height:auto}
+
+/* Bandeau WhatsApp */
+.un-bandeau{padding:2rem 2.4rem;border-radius:18px;color:#fff;background:linear-gradient(100deg,var(--vert-fonce),var(--vert-clair));box-shadow:0 16px 40px rgba(47,107,63,.28)}
+.un-bandeau h2{color:#fff;font-size:1.25rem}
+.un-bandeau .un-rond{background:rgba(255,255,255,.18);color:#fff}
+
+/* ---------- Fiche produit ---------- */
+.un-fiche-img{position:relative;border-radius:18px;overflow:hidden;background:var(--pale);aspect-ratio:1/1;display:grid;place-items:center;color:var(--sauge);box-shadow:var(--ombre)}
+.un-fiche-img img{width:100%;height:100%;object-fit:cover}
+.un-fiche-prix{font-size:1.9rem;font-weight:700;color:var(--vert-fonce)}
+.un-fiche-prix s{font-size:1.1rem;font-weight:400;color:var(--doux)}
+.accordion{--bs-accordion-border-color:var(--trait);--bs-accordion-active-bg:var(--pale);--bs-accordion-active-color:var(--vert-fonce);--bs-accordion-btn-focus-box-shadow:0 0 0 .25rem rgba(47,107,63,.18);--bs-accordion-border-radius:.75rem;--bs-accordion-inner-border-radius:.75rem}
+.accordion-button{font-weight:700;color:var(--vert-fonce)}
+.accordion-body{white-space:pre-line}
+.accordion-item.is-attention .accordion-button,.accordion-item.is-attention .accordion-body{background:var(--terre-pale)}
+
+/* ---------- Tableaux, récapitulatifs, statuts ---------- */
+.table{--bs-table-bg:#fff;--bs-table-hover-bg:var(--pale)}
+.table thead th{background:var(--pale);color:var(--vert-fonce);font-size:.8rem;text-transform:uppercase;letter-spacing:.8px;border-bottom-width:1px}
+.un-vignette{width:60px;height:60px;border-radius:10px;object-fit:cover;background:var(--pale);display:grid;place-items:center;color:var(--sauge);flex:none}
+.un-recap{position:sticky;top:100px}
+.un-statut{display:inline-block;padding:.2em .75em;border-radius:999px;font-size:.85rem;font-weight:700;background:var(--terre-pale);color:#7A4E22;white-space:nowrap}
+.un-statut--payee,.un-statut--livree{background:var(--pale2);color:var(--vert-fonce)}
+.un-statut--annulee{background:#FBEAE7;color:#B23A2E}
+.un-suivi .col{padding:.7rem .4rem;text-align:center;font-size:.9rem;border-radius:.6rem;background:var(--creme2);color:var(--doux)}
+.un-suivi .col.is-fait{background:var(--vert);color:#fff;font-weight:700}
+.un-encadre{padding:1.4rem 1.5rem;border-left:5px solid var(--vert);border-radius:.75rem;background:var(--pale)}
+.un-encadre--terre{border-color:var(--terre);background:var(--terre-pale)}
+.un-gros{font-size:1.35rem;font-weight:700;color:var(--vert-fonce)}
+
+/* Choix du mode de règlement */
+.un-mode{display:flex;gap:.8rem;align-items:flex-start;padding:1rem 1.1rem;border:2px solid var(--trait);border-radius:.75rem;background:#fff;cursor:pointer;font-weight:700}
+.un-mode:has(input:checked){border-color:var(--vert);background:var(--pale)}
+.un-mode .form-check-input{margin-top:.35rem;flex:none}
+.un-mode small{display:block;font-weight:400;color:var(--doux)}
+
+/* Texte long (CGV, confidentialité) */
+.un-prose{max-width:75ch}
+.un-prose h2{font-size:1.2rem;margin:1.8rem 0 .5rem}
+
+/* ---------- Pied de page ---------- */
+.un-pied{background:var(--vert-fonce);color:rgba(255,255,255,.85);padding:48px 0 22px}
+.un-pied h3{color:#fff;font-size:1.05rem;margin-bottom:.7rem}
+.un-pied a{color:rgba(255,255,255,.85);text-decoration:none}
+.un-pied a:hover{color:#fff;text-decoration:underline}
+.un-pied-bas{margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.15);text-align:center;font-size:.9rem;color:rgba(255,255,255,.75)}
+
+/* Bouton WhatsApp flottant */
+.un-wa-flottant{position:fixed;right:20px;bottom:20px;z-index:1040;display:grid;place-items:center;width:60px;height:60px;border-radius:50%;background:var(--wa);color:#fff;font-size:1.9rem;box-shadow:0 10px 26px rgba(0,0,0,.25);transition:transform .2s}
+.un-wa-flottant:hover{transform:scale(1.07);color:#fff}
+@media(max-width:575.98px){.un-wa-flottant{width:52px;height:52px;font-size:1.6rem;right:14px;bottom:14px}}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}

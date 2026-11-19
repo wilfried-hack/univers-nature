@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block titre %}Conditions générales de vente{% endblock %}
+
+{% block contenu %}
+<section class="un-entete-page">
+  <div class="container"><h1>Conditions générales de vente</h1><p>Modèle à faire relire avant la mise en ligne.</p></div>
+</section>
+<section class="un-sec">
+  <div class="container un-prose">
+    <h2>1. Objet</h2>
+    <p>Les présentes conditions régissent les ventes réalisées par {{ boutique.NOM }} sur son site.</p>
+    <h2>2. Commande</h2>
+    <p>La commande est passée sur le site, puis confirmée par téléphone ou message avant l’expédition. Un numéro de commande est communiqué au client.</p>
+    <h2>3. Prix</h2>
+    <p>Les prix sont indiqués en {{ boutique.DEVISE }}. Les frais de livraison dépendent de la zone et sont affichés avant la confirmation de la commande.</p>
+    <h2>4. Paiement</h2>
+    <p>Aucun paiement n’est effectué sur le site. Deux modes de règlement sont proposés :</p>
+    <ul>
+      <li><b>Paiement à la livraison</b>, en espèces ou par Mobile Money remis au livreur, dans les zones desservies directement ;</li>
+      <li><b>Mobile Money avant expédition</b>, au numéro {{ boutique.MOBILE_MONEY_NUMERO }} ({{ boutique.MOBILE_MONEY_NOM }}). Le client envoie ensuite la référence du transfert ou une capture d’écran sur le site, depuis le suivi de sa commande. Ce mode est obligatoire pour les zones éloignées.</li>
+    </ul>
+    <p>Un reçu est remis pour chaque paiement.</p>
+    <h2>5. Livraison</h2>
+    <p>Les délais sont indicatifs et dépendent de la zone de livraison.</p>
+    <h2>6. Réclamations</h2>
+    <p>Toute réclamation peut être adressée sur WhatsApp au {{ boutique.TELEPHONE }} ou par e-mail à {{ boutique.EMAIL }}.</p>
+    <p><i>À compléter : conditions de retour et d’échange, produits non repris (produits d’hygiène ouverts), mentions légales de l’entreprise.</i></p>
+  </div>
+</section>
+{% endblock %}

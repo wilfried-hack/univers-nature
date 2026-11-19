@@ -1,0 +1,69 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{% block titre %}Tableau de bord{% endblock %} | Gestion {{ boutique.NOM }}</title>
+  <link rel="icon" href="{% static 'img/logo.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/gestion.css' %}">
+  <script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</head>
+<body>
+{% with page=request.resolver_match.url_name %}
+<div class="g-app">
+  <!-- Barre latérale : fixe sur ordinateur, tiroir (offcanvas) sur téléphone -->
+  <aside class="g-side offcanvas-lg offcanvas-start" tabindex="-1" id="g-side" aria-label="Navigation de la gestion">
+    <div class="offcanvas-body">
+      <div class="d-flex align-items-start">
+        <a class="g-brand" href="{% url 'gestion:tableau_de_bord' %}">
+          <img src="{% static 'img/logo.svg' %}" alt="">
+          <span>{{ boutique.NOM }}<small>Espace de gestion</small></span>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none me-3" data-bs-dismiss="offcanvas" data-bs-target="#g-side" aria-label="Fermer le menu"></button>
+      </div>
+
+      <nav class="g-nav">
+        <a class="g-lien{% if page == 'tableau_de_bord' %} is-on{% endif %}" href="{% url 'gestion:tableau_de_bord' %}"><i class="bi bi-speedometer2"></i><span>Tableau de bord</span></a>
+        <span class="g-titre">Ventes</span>
+        <a class="g-lien{% if page == 'commandes' or page == 'commande' %} is-on{% endif %}" href="{% url 'gestion:commandes' %}"><i class="bi bi-receipt"></i><span>Commandes</span>{% if nb_a_traiter %}<span class="badge rounded-pill">{{ nb_a_traiter }}</span>{% endif %}</a>
+        <a class="g-lien{% if page == 'clients' %} is-on{% endif %}" href="{% url 'gestion:clients' %}"><i class="bi bi-people"></i><span>Clients</span></a>
+        <a class="g-lien{% if page == 'statistiques' %} is-on{% endif %}" href="{% url 'gestion:statistiques' %}"><i class="bi bi-graph-up-arrow"></i><span>Statistiques</span></a>
+        <span class="g-titre">Boutique</span>
+        <a class="g-lien{% if page == 'produits' or page == 'produit_ajouter' or page == 'produit_modifier' %} is-on{% endif %}" href="{% url 'gestion:produits' %}"><i class="bi bi-box-seam"></i><span>Produits</span></a>
+        <a class="g-lien{% if page == 'categories' or page == 'categorie_modifier' %} is-on{% endif %}" href="{% url 'gestion:categories' %}"><i class="bi bi-tags"></i><span>Catégories</span></a>
+        <a class="g-lien{% if page == 'zones' or page == 'zone_modifier' %} is-on{% endif %}" href="{% url 'gestion:zones' %}"><i class="bi bi-truck"></i><span>Zones de livraison</span></a>
+      </nav>
+
+      <div class="g-pied">
+        <div class="g-user">
+          <span class="g-avatar" aria-hidden="true">{{ user.first_name|default:user.username|first|upper }}{{ user.last_name|first|upper }}</span>
+          <span class="text-truncate"><strong>{{ user.get_full_name|default:user.username }}</strong><small>Administrateur</small></span>
+        </div>
+        <a class="g-mini" href="{% url 'pages:accueil' %}" target="_blank"><i class="bi bi-shop"></i> Voir le site</a>
+        <form method="post" action="{% url 'comptes:deconnexion' %}">{% csrf_token %}<button class="g-mini g-sortie" type="submit"><i class="bi bi-box-arrow-right"></i> Déconnexion</button></form>
+      </div>
+    </div>
+  </aside>
+
+  <div class="g-col">
+    <div class="g-top d-lg-none">
+      <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#g-side" aria-controls="g-side" aria-label="Ouvrir le menu"><i class="bi bi-list"></i></button>
+      <strong>{{ boutique.NOM }}</strong>
+    </div>
+    <main class="g-main" id="contenu">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+      </div>
+      {% endfor %}
+      {% block contenu %}{% endblock %}
+      <p class="g-foot">© {% now "Y" %} {{ boutique.NOM }} — espace de gestion.</p>
+    </main>
+  </div>
+</div>
+{% endwith %}
+</body>
+</html>
