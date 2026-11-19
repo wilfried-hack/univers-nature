@@ -15,31 +15,22 @@ Durée : environ 30 minutes. Python utilisé : **3.13** (Django 6.1 demande Pyth
 
 ## 2. Récupérer le code depuis GitHub
 
-Le code est sur GitHub, dans un dépôt **privé**. PythonAnywhere doit pouvoir le lire : on lui donne un
-**jeton d'accès en lecture seule**.
+Le code est dans un dépôt GitHub **public** : https://github.com/wilfried-hack/univers-nature
 
-1. Sur GitHub : photo de profil → **Settings** → **Developer settings** → **Personal access tokens**
-   → **Fine-grained tokens** → **Generate new token**.
-   - *Repository access* : **Only select repositories** → le dépôt `univers-nature` ;
-   - *Permissions* → *Contents* : **Read-only** ;
-   - *Expiration* : par exemple 1 an.
-   Copier le jeton (`github_pat_…`) : il ne s'affiche qu'une fois.
-2. Sur PythonAnywhere : onglet **Consoles** → **Bash**, puis :
+Sur PythonAnywhere : onglet **Consoles** → **Bash**, puis :
 
 ```bash
 cd ~
-git clone https://github.com/NOM-GITHUB/univers-nature.git
+git clone https://github.com/wilfried-hack/univers-nature.git
 ```
 
-   Quand Git demande **Username** : votre nom GitHub. **Password** : coller le **jeton** (pas votre mot de passe GitHub ;
-   rien ne s'affiche pendant le collage, c'est normal).
-3. Pour ne pas retaper le jeton à chaque mise à jour :
+Aucun mot de passe n'est demandé, puisque le dépôt est public.
 
-```bash
-git config --global credential.helper store
-```
-
-   (le jeton est alors gardé dans `~/.git-credentials`, lisible seulement par votre compte PythonAnywhere).
+> Le dépôt public ne contient **aucune** donnée sensible : la clé secrète, la base de données, les photos et les
+> captures de paiement restent uniquement sur le serveur (fichier `.env`, `db.sqlite3`, `media/`, `prive/`).
+>
+> Si le dépôt devient privé plus tard : créer sur GitHub un *Fine-grained token* en lecture seule
+> (Settings → Developer settings → Personal access tokens), puis le coller comme mot de passe lors du `git pull`.
 
 ## 3. Installer (console Bash)
 
